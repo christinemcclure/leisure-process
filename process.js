@@ -1,5 +1,4 @@
 //
-//  Create a log file of YYYY-MM-DD format. Delete any file if it exists
 //  Open ISBN file
 //  For each line of the file:
 //    - Split line into an array by spaces
@@ -16,17 +15,43 @@
 //    - Remove ISBN from array.
 //
 
+// Modules
 var fs = require('fs'),
   xml2js = require('xml2js');
 var util = require('util'); // to inspect objects
+//var moment = require('moment');
+
+
+// Variables
 var debug = true;
+var moment = require('moment');
+moment().format();
+var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
+var isbnFile = 'isbns-sample.txt';
 
-function process(){
-
-
-
-
+function process(isbnFile){
+//  Create a log file of YYYY-MM-DD format. Delete any file if it exists
+  fs.exists(logFile, function (exists) {
+    if (exists){
+      fs.unlink(logFile, function (error) {
+        if (error) throw error;
+        if (debug) console.log('successfully deleted log file before processing: ' + logFile + '\n');
+      });
+    }
+    logMsg('Processing started. Using Input file name: '+isbnFile);
+  });
 
 }
 
-process();
+process(isbnFile);
+
+//// FUNCTIONS
+
+function logMsg(msg){
+  var moment = require('moment');
+  moment().format();
+  var now = moment().format('YYYY-MM-DD HH:mm');
+  fs.appendFile(logFile, now + ' ' + msg + '\n', function (error) {
+    if (error) throw error;
+  });
+}
