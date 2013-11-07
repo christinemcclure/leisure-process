@@ -16,3 +16,17 @@
 //    - Remove ISBN from array.
 //
 
+var fs = require('fs'),
+  xml2js = require('xml2js');
+var util = require('util'); // to inspect objects
+var debug = true;
+
+function process(){
+
+
+
+
+
+}
+
+process();
