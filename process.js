@@ -29,8 +29,14 @@ moment().format();
 var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
 var isbnFile = 'isbns-sample.txt';
 
-function process(isbnFile){
 //  Create a log file of YYYY-MM-DD format. Delete any file if it exists
+
+
+function init(inputFile, process){
+  inputFile = isbnFile;
+}
+
+function process(){
   fs.exists(logFile, function (exists) {
     if (exists){
       fs.unlink(logFile, function (error) {
@@ -40,10 +46,11 @@ function process(isbnFile){
     }
     logMsg('Processing started. Using Input file name: '+isbnFile);
   });
-
 }
 
-process(isbnFile);
+
+
+init(isbnFile);
 
 //// FUNCTIONS
 
@@ -55,3 +62,4 @@ function logMsg(msg){
     if (error) throw error;
   });
 }
+
