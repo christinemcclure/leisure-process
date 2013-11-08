@@ -94,14 +94,20 @@ function processISBNFile(callback){
       }
       //console.log('The file data is \n'+ fileData);
       var isbns=fileData.split('\n');
-      var badISBNs = 0;
+      var badISBNs=0;
+      var dupeISBNs = 0;
       for (var i=0; i< isbns.length; i++){
         var isbnArr=isbns[i].split(' ');
         var tempISBN = isbnArr[0].trim().replace(/(\r\n|\n|\r)/gm,"");;// isbn will be first element in the array. Ignore spaces and line breaks
         var rt = checkISBN(tempISBN);
         if (rt==true){
           rt = checkIfInArray(isbnsToProcess,tempISBN);
-          if (rt != true) isbnsToProcess.push(tempISBN); // only add if not already in array
+          if (rt != true) {
+            isbnsToProcess.push(tempISBN); // only add if not already in array
+          }
+          else {
+            dupeISBNs += 1;
+          }
           if (debug) console.log('here is the array of ISBNS to process '+isbnsToProcess.toString());
         }
         else{
@@ -109,7 +115,7 @@ function processISBNFile(callback){
           badISBNs += 1;
         }
       }
-      logMsg('There were '+isbns.length+' lines in the file. '+badISBNs +' did not contain a valid ISBN.');
+      logMsg('There were '+isbns.length+' lines in the file. '+ isbnsToProcess.length+' will be processed to collect bibliographic data. '+badISBNs +' did not contain a valid ISBN, and ' + dupeISBNs +' were duplicates.');
     });
   setTimeout(function() { callback(); }, 100);
  }
