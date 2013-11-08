@@ -62,9 +62,6 @@ function series() {
 series();
 
 
-
-
-
 //// FUNCTIONS
 
 
