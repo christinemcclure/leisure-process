@@ -2,6 +2,7 @@
 var fs = require('fs'),
   xml2js = require('xml2js');
 var util = require('util'); // to inspect objects
+var request = require('request');
 
 
 
@@ -13,7 +14,13 @@ var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
 var isbnFile = 'isbns-sample.txt';
 var isbnsToProcess=[];
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
-
+var url= '';
+var parserPrefix = 'oclc';
+var jsonData = '';
+var jsonString = "";
+var jsonObj;
+var datafieldObj, obj, prop;
+var subjectArray=[], titleArray=[],summaryArray=[];
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
 function series() {
@@ -206,4 +213,14 @@ function collectXMLdata(){
            }
         }
   });
+}
+
+function sendRequest(url){
+  url = createURL();
+  request(url, function (error, response, xmlData) {
+    if (!error && response.statusCode == 200) {
+  //    console.log(xmlData);
+      jsonData = parser.parseString(xmlData);
+    }
+  })
 }
