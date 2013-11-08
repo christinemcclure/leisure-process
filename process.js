@@ -13,15 +13,19 @@ var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
 var isbnFile = 'isbns-sample.txt';
 var isbnsToProcess=[];
 
-//  Create a log file of YYYY-MM-DD format. Delete any file if it exists
-
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
 function series() {
     var callbackSeries =  
       [
-        init,
-        processISBNFile
+        init, //  Create a log file of YYYY-MM-DD format. Delete any file if it exists
+        processISBNFile //
+          // Open ISBN file
+          //  For each line of the file:
+          //    - Split line into an array by spaces
+          //    - Trim leading/trailing spaces from array[0]
+          //    - Verify array[0] is a valid ISBN. If not valid, write to log file and go to next line.
+          //    - Check to see if this ISBN is in the "to be processed" array. If not, add it.
       ];
  
     function next() {
@@ -38,12 +42,7 @@ function series() {
 
  
   //
-//  Open ISBN file
-//  For each line of the file:
-//    - Split line into an array by spaces
-//    - Trim leading/trailing spaces from array[0]
-//    - Verify array[0] is a valid ISBN. If not valid, write to log file and go to next line.
-//    - Check to see if this ISBN is in the "to be processed" array. If not, add it.
+
 //  For each element of the "to be processed" array:
 //    - Send API request to OCLC for that ISBN
 //    - Receive request. If error, write to log file
