@@ -178,3 +178,32 @@ function createURL(isbn){
   if(debug) console.log('url is '+url+'\n');
   return url;
 }
+
+function collectXMLdata(){
+  parser.addListener('end', function(result) {
+        jsonString = JSON.stringify(result);
+        jsonObj = JSON.parse(jsonString);
+        datafieldObj = jsonObj.record.datafield;
+        i=0;
+        for (var key in datafieldObj) {
+           obj = datafieldObj[key];
+           for (prop in obj) {
+              //check that it's not an inherited property
+              if(obj.hasOwnProperty(prop)){
+                collectAray('650',subjectArray);
+                collectAray('245',titleArray);
+                collectAray('520',summaryArray);
+                if (debug){
+                  console.log(util.inspect(datafieldObj, showHidden=true, depth=6, colorize=true));
+                  console.log('\n  TITLR \n');
+                  console.log(util.inspect(titleArray, showHidden=true, depth=6, colorize=true));
+                  console.log('\n  SUMMARY \n');
+                  console.log(util.inspect(summaryArray, showHidden=true, depth=6, colorize=true));
+                  console.log('\n  SUBJECTS \n');
+                  console.log(util.inspect(subjectArray, showHidden=true, depth=6, colorize=true));
+                }
+              }
+           }
+        }
+  });
+}
