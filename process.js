@@ -140,7 +140,6 @@ function logMsg(msg){
 function checkISBN(isbn) {
 // not a true validation, just ensuring that the split worked correctly
   var exp, ret;
-  var debug = false; // set to true to do additional logging
   if  (isbn.length === 10) {
     exp = new RegExp(/\b(^\d{10}$|^\d{9}x)$\b/i); // ISBN-10 can be 10 digits, or 9 digits + x (checksum of 10)
     if (debug) console.log('\n the length of '+isbn +' is '+ isbn.length +'\n');
