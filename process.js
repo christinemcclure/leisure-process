@@ -68,7 +68,10 @@ series();
 //// FUNCTIONS
 
 
-function finish() { console.log('Finished.'); }
+function finish() { 
+  logMsg('Processing complete');
+  console.log('Finished processing. Check '+logFile+' for details.'); 
+}
 
 
 function init(callback){
@@ -118,7 +121,7 @@ function processISBNFile(callback){
         }
       }
     });
-   setTimeout(function() { callback(); }, 100);
+  setTimeout(function() { callback(); }, 100);
  }
  
  
