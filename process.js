@@ -7,11 +7,12 @@ var util = require('util'); // to inspect objects
 
 // Variables
 var debug = true;
-var moment = require('moment');
-moment().format();
+var moment = require('moment');// for date formatting
+  moment().format();
 var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
 var isbnFile = 'isbns-sample.txt';
 var isbnsToProcess=[];
+var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
@@ -166,4 +167,15 @@ function checkIfInArray(arr, item){
     }
   }
   return flag;
+}
+
+function createURL(isbn){
+  if (!isbn){ // while testing and not processing a file
+    isbn='9780439023481';
+  }
+  url = 'http://www.worldcat.org/webservices/catalog/content/isbn/' + isbn + '?wskey='+key;
+  // use oaiauth later
+  url = encodeURI(url);// necessary?
+  if(debug) console.log('url is '+url+'\n');
+  return url;
 }
