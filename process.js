@@ -2,7 +2,7 @@
 var fs = require('fs'),
   xml2js = require('xml2js');
 var util = require('util'); // to inspect objects
-//var moment = require('moment');
+
 
 
 // Variables
@@ -85,16 +85,6 @@ function init(callback){
   setTimeout(function() { callback(); }, 100);
 }
 
-//    processISBNFile(isbnFile);
-
-function logMsg(msg){
-  var moment = require('moment');
-  moment().format();
-  var now = moment().format('YYYY-MM-DD HH:mm');
-  fs.appendFile(logFile, now + ' ' + msg + '\n', function (error) {
-    if (error) throw error;
-  });
-}
 
 function processISBNFile(callback){
     fs.readFile(isbnFile, 'utf8', function(error, fileData) {
@@ -104,24 +94,35 @@ function processISBNFile(callback){
       }
       //console.log('The file data is \n'+ fileData);
       var isbns=fileData.split('\n');
-
+      var badISBNs = 0;
       for (var i=0; i< isbns.length; i++){
         var isbnArr=isbns[i].split(' ');
-        var tempISBN = isbnArr[0].trim();// isbn will be first element in the array
-        if (debug) console.log('\n Element '+ i +' of the array= "'+tempISBN+'"\n');
+        var tempISBN = isbnArr[0].trim().replace(/(\r\n|\n|\r)/gm,"");;// isbn will be first element in the array. Ignore spaces and line breaks
         var rt = checkISBN(tempISBN);
-        if (debug) console.log('\nrt from check ISBN='+rt+'\n');
         if (rt==true){
           rt = checkIfInArray(isbnsToProcess,tempISBN);
           if (rt != true) isbnsToProcess.push(tempISBN); // only add if not already in array
-          if (debug) console.log('here is the array '+isbnsToProcess.toString());
+          if (debug) console.log('here is the array of ISBNS to process '+isbnsToProcess.toString());
+        }
+        else{
+          logMsg('"' +tempISBN + '" is not a valid ISBN');
+          badISBNs += 1;
         }
       }
+      logMsg('There were '+isbns.length+' lines in the file. '+badISBNs +' did not contain a valid ISBN.');
     });
   setTimeout(function() { callback(); }, 100);
  }
  
- 
+function logMsg(msg){
+  var moment = require('moment');
+  moment().format();
+  var now = moment().format('YYYY-MM-DD HH:mm');
+  fs.appendFile(logFile, now + ' ' + msg + '\n', function (error) {
+    if (error) throw error;
+  });
+}
+
 function checkISBN(isbn) {
 // not a true validation, just ensuring that the split worked correctly
   var exp, ret;
