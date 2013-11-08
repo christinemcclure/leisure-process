@@ -19,13 +19,17 @@ function series() {
     var callbackSeries =  
       [
         init, //  Create a log file of YYYY-MM-DD format. Delete any file if it exists
-        processISBNFile //
+        processISBNFile,
           // Open ISBN file
           //  For each line of the file:
           //    - Split line into an array by spaces
           //    - Trim leading/trailing spaces from array[0]
           //    - Verify array[0] is a valid ISBN. If not valid, write to log file and go to next line.
           //    - Check to see if this ISBN is in the "to be processed" array. If not, add it.
+        getAPIdata
+          //  For each element of the "to be processed" array:
+          //    - Send API request to OCLC for that ISBN
+          //    - Receive request. If error, write to log file        
       ];
  
     function next() {
@@ -41,11 +45,9 @@ function series() {
 };
 
  
-  //
 
-//  For each element of the "to be processed" array:
-//    - Send API request to OCLC for that ISBN
-//    - Receive request. If error, write to log file
+
+
 //    - Take only title, author, summary, ISBNs, and Subjects from the results
 //    - Construct valid JSON object
 //    - Append to output file
@@ -69,6 +71,12 @@ function finish() {
   console.log('Finished processing. Check '+logFile+' for details.'); 
 }
 
+function getAPIdata(callback){
+  for (var i=0; i<isbnsToProcess.length; i++){
+    
+  }
+  setTimeout(function() { callback(); }, 100);
+}
 
 function init(callback){
   fs.exists(logFile, function (exists) {
