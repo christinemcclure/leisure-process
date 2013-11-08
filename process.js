@@ -17,9 +17,6 @@ var isbnFile = 'isbns-sample.txt';
 
 function init(inputFile, process){
   inputFile = isbnFile;
-}
-
-function process(){
   fs.exists(logFile, function (exists) {
     if (exists){
       fs.unlink(logFile, function (error) {
@@ -28,9 +25,13 @@ function process(){
       });
     }
     logMsg('Processing started. Using Input file name: '+isbnFile);
-    
   } // end callback 
   );// end function
+  console.log('\n'+ moment().format('YYYY-MM-DD HH:MM') + '\nProcessing started. Using ' + isbnFile + ' and writing messages to "'+ logFile +'".\n');
+}
+
+function process(){
+
   
   //
 //  Open ISBN file
@@ -50,8 +51,6 @@ function process(){
 //
   
 }
-
-
 
 init(isbnFile);
 
