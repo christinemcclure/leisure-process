@@ -18,9 +18,9 @@ var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var url= '';
 var jsonData = '';
 var jsonString = "";
-var jsonObj;
+var jsonObj, testStr;
 var datafieldObj, obj, prop;
-var subjectArray=[], titleArray=[],summaryArray=[];
+var subjectArray=[], titleArray=[],summaryArray=[], testArr=[];
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
 function series() {
@@ -107,7 +107,7 @@ function collectXMLdata(){
                 collectAray('650',subjectArray);
                 collectAray('245',titleArray);
                 collectAray('520',summaryArray);
-                if (debug2){
+                if (debug){
                   console.log(util.inspect(datafieldObj, showHidden=true, depth=6, colorize=true));
                   console.log('  TITLE');
                   console.log(util.inspect(titleArray, showHidden=true, depth=6, colorize=true));
@@ -116,8 +116,17 @@ function collectXMLdata(){
                   console.log('  SUBJECTS ');
                   console.log(util.inspect(subjectArray, showHidden=true, depth=6, colorize=true));
                 }
+
               }
            }
+        }
+
+        if (debug2){
+       //   var testTitle=datafieldObj.
+          var titleObj = titleArray[1][0]._;
+          var authorObj = titleArray[1][1]._;
+          console.log(titleObj);
+          console.log(authorObj);
         }
   });
 }
