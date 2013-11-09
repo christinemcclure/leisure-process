@@ -32,7 +32,7 @@ function series() {
           //    - Trim leading/trailing spaces from array[0]
           //    - Verify array[0] is a valid ISBN. If not valid, write to log file and go to next line.
           //    - Check to see if this ISBN is in the "to be processed" array. If not, add it.
-        getAPIdata
+        getAndProcessData
           //  For each element of the "to be processed" array:
           //    - Send API request to OCLC for that ISBN
           //    - Receive request. If error, write to log file        
@@ -74,12 +74,17 @@ function finish() {
   console.log('Finished processing. Check '+logFile+' for details.');
 }
 
-function getAPIdata(callback){
-  for (var i=0; i<isbnsToProcess.length; i++){
-    
-  }
+function getAndProcessData(callback){
+  loopThroughISBNfile();
   setTimeout(function() { callback(); }, 100);
 }
+
+function loopThroughISBNfile(){
+  for (var i=0; i<isbnsToProcess.length; i++){
+    console.log(isbnsToProcess[i]);
+  }
+}
+
 
 function init(callback){
   fs.exists(logFile, function (exists) {
