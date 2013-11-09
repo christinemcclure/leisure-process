@@ -3,8 +3,7 @@ var fs = require('fs'),
   xml2js = require('xml2js');
 var util = require('util'); // to inspect objects
 var request = require('request');
-var parser = new xml2js.Parser({attrkey : parserPrefix});
-
+var parser = {};
 
 // Variables
 var debug = true;
@@ -15,7 +14,6 @@ var isbnFile = 'isbns-sample.txt';
 var isbnsToProcess=[];
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var url= '';
-var parserPrefix = 'oclc';
 var jsonData = '';
 var jsonString = "";
 var jsonObj;
@@ -188,6 +186,7 @@ function createURL(isbn){
 }
 
 function collectXMLdata(){
+  parser = new xml2js.Parser({attrkey : 'oclc'});
   parser.addListener('end', function(result) {
         jsonString = JSON.stringify(result);
         jsonObj = JSON.parse(jsonString);
