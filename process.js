@@ -83,7 +83,6 @@ function getAndProcessData(callback){
 function loopThroughISBNfile(){
   for (var i=0; i<isbnsToProcess.length; i++){
     var url = createURL(isbnsToProcess[i]);
-    collectXMLdata();
     sendRequest(url);
   }
 }
@@ -124,6 +123,7 @@ function sendRequest(url){
   request(url, function (error, response, xmlData) {
     if (!error && response.statusCode == 200) {
   //    console.log(xmlData);
+      collectXMLdata();
       jsonData = parser.parseString(xmlData);
     }
   });
