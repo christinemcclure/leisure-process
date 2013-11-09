@@ -6,7 +6,7 @@ var request = require('request');
 var parser = {};
 
 // Variables
-var debug = true;
+var debug = false;
 var moment = require('moment');// for date formatting
   moment().format();
 var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
@@ -81,7 +81,8 @@ function getAndProcessData(callback){
 
 function loopThroughISBNfile(){
   for (var i=0; i<isbnsToProcess.length; i++){
-    console.log(isbnsToProcess[i]);
+    var url = createURL(isbnsToProcess[i]);
+    console.log(url);
   }
 }
 
@@ -218,7 +219,7 @@ function checkISBN(isbn) {
     exp = new RegExp(/^978\d{10}$/); // ISBN-13 has different checksum logic. only digits
   }
   else {
-    console.log('"'+isbn+'" is a not valid isbn.');
+    if (debug) console.log('"'+isbn+'" is a not valid isbn.');
     return false; // quick check for length
     //
   }
