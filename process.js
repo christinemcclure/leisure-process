@@ -86,6 +86,69 @@ function loopThroughISBNfile(){
 }
 
 
+function collectXMLdata(){
+  parser = new xml2js.Parser({attrkey : 'oclc'});
+  parser.addListener('end', function(result) {
+        jsonString = JSON.stringify(result);
+        jsonObj = JSON.parse(jsonString);
+        datafieldObj = jsonObj.record.datafield;
+        i=0;
+        for (var key in datafieldObj) {
+           obj = datafieldObj[key];
+           for (prop in obj) {
+              //check that it's not an inherited property
+              if(obj.hasOwnProperty(prop)){
+                collectAray('650',subjectArray);
+                collectAray('245',titleArray);
+                collectAray('520',summaryArray);
+                if (debug){
+                  console.log(util.inspect(datafieldObj, showHidden=true, depth=6, colorize=true));
+                  console.log('  TITLE');
+                  console.log(util.inspect(titleArray, showHidden=true, depth=6, colorize=true));
+                  console.log('  SUMMARY ');
+                  console.log(util.inspect(summaryArray, showHidden=true, depth=6, colorize=true));
+                  console.log('  SUBJECTS ');
+                  console.log(util.inspect(subjectArray, showHidden=true, depth=6, colorize=true));
+                }
+              }
+           }
+        }
+  });
+}
+
+function sendRequest(url){
+  url = createURL();
+  request(url, function (error, response, xmlData) {
+    if (!error && response.statusCode == 200) {
+  //    console.log(xmlData);
+      jsonData = parser.parseString(xmlData);
+    }
+  })
+}
+
+
+function createURL(isbn){
+  if (!isbn){ // while testing and not processing a file
+    isbn='9780439023481';
+  }
+  url = 'http://www.worldcat.org/webservices/catalog/content/isbn/' + isbn + '?wskey='+key;
+  // use oaiauth later
+  url = encodeURI(url);// necessary?
+  if(debug) console.log('url is '+url);
+  return url;
+}
+
+
+function collectAray(tag,tmpArray){
+  if (obj[prop]['tag']==tag){ // find
+    if (debug) console.log('found a '+tag+' item.');
+    i++;
+    tmpArray[i]=obj['subfield'];
+  }
+}
+
+
+
 function init(callback){
   fs.exists(logFile, function (exists) {
     if (exists){
@@ -134,7 +197,7 @@ function processISBNFile(callback){
     });
   setTimeout(function() { callback(); }, 100);
  }
- 
+
 function logMsg(msg){
   var moment = require('moment');
   moment().format();
@@ -173,63 +236,4 @@ function checkIfInArray(arr, item){
     }
   }
   return flag;
-}
-
-function createURL(isbn){
-  if (!isbn){ // while testing and not processing a file
-    isbn='9780439023481';
-  }
-  url = 'http://www.worldcat.org/webservices/catalog/content/isbn/' + isbn + '?wskey='+key;
-  // use oaiauth later
-  url = encodeURI(url);// necessary?
-  if(debug) console.log('url is '+url);
-  return url;
-}
-
-function collectXMLdata(){
-  parser = new xml2js.Parser({attrkey : 'oclc'});
-  parser.addListener('end', function(result) {
-        jsonString = JSON.stringify(result);
-        jsonObj = JSON.parse(jsonString);
-        datafieldObj = jsonObj.record.datafield;
-        i=0;
-        for (var key in datafieldObj) {
-           obj = datafieldObj[key];
-           for (prop in obj) {
-              //check that it's not an inherited property
-              if(obj.hasOwnProperty(prop)){
-                collectAray('650',subjectArray);
-                collectAray('245',titleArray);
-                collectAray('520',summaryArray);
-                if (debug){
-                  console.log(util.inspect(datafieldObj, showHidden=true, depth=6, colorize=true));
-                  console.log('  TITLE');
-                  console.log(util.inspect(titleArray, showHidden=true, depth=6, colorize=true));
-                  console.log('  SUMMARY ');
-                  console.log(util.inspect(summaryArray, showHidden=true, depth=6, colorize=true));
-                  console.log('  SUBJECTS ');
-                  console.log(util.inspect(subjectArray, showHidden=true, depth=6, colorize=true));
-                }
-              }
-           }
-        }
-  });
-}
-
-function sendRequest(url){
-  url = createURL();
-  request(url, function (error, response, xmlData) {
-    if (!error && response.statusCode == 200) {
-  //    console.log(xmlData);
-      jsonData = parser.parseString(xmlData);
-    }
-  })
-}
-
-function collectAray(tag,tmpArray){
-  if (obj[prop]['tag']==tag){ // find
-    if (debug) console.log('found a '+tag+' item.');
-    i++;
-    tmpArray[i]=obj['subfield'];
-  }
 }
