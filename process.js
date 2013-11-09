@@ -6,11 +6,12 @@ var request = require('request');
 var parser = {};
 
 // Variables
-var debug = false;
 var debug2 = true;
+var debug = false;
 var moment = require('moment');// for date formatting
   moment().format();
 var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
+var isbn='';
 var isbnFile = 'isbns-sample.txt';
 var isbnsToProcess=[];
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
@@ -82,8 +83,10 @@ function getAndProcessData(callback){
 
 function loopThroughISBNfile(){
   for (var i=0; i<isbnsToProcess.length; i++){
-    var url = createURL(isbnsToProcess[i]);
+    isbn=isbnsToProcess[i];
+    var url = createURL(isbn);
     sendRequest(url);
+    console.log(i+'*****'+url+'***'+isbn+'***'+isbnsToProcess.length);
   }
 }
 
@@ -120,7 +123,6 @@ function collectXMLdata(){
 }
 
 function sendRequest(url){
-  url = createURL();
   request(url, function (error, response, xmlData) {
     if (!error && response.statusCode == 200) {
   //    console.log(xmlData);
@@ -132,9 +134,6 @@ function sendRequest(url){
 
 
 function createURL(isbn){
-  if (!isbn){ // while testing and not processing a file
-    isbn='9780439023481';
-  }
   url = 'http://www.worldcat.org/webservices/catalog/content/isbn/' + isbn + '?wskey='+key;
   // use oaiauth later
   url = encodeURI(url);// necessary?
