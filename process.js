@@ -3,7 +3,7 @@ var fs = require('fs'),
   xml2js = require('xml2js');
 var util = require('util'); // to inspect objects
 var request = require('request');
-
+var parser = new xml2js.Parser({attrkey : parserPrefix});
 
 
 // Variables
@@ -68,8 +68,9 @@ function series() {
 
 /// MAIN PROCESSING SECTION
 
-series();
-
+//series();
+collectXMLdata();
+sendRequest(9780670020836);
 
 //// FUNCTIONS
 
@@ -223,4 +224,12 @@ function sendRequest(url){
       jsonData = parser.parseString(xmlData);
     }
   })
+}
+
+function collectAray(tag,tmpArray){
+  if (obj[prop]['tag']==tag){ // find
+    if (debug) console.log('found a '+tag+' item \n.');
+    i++;
+    tmpArray[i]=obj['subfield'];
+  }
 }
