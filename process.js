@@ -86,7 +86,6 @@ function loopThroughISBNfile(){
     isbn=isbnsToProcess[i];
     var url = createURL(isbn);
     sendRequest(url);
-    console.log(i+'*****'+url+'***'+isbn+'***'+isbnsToProcess.length);
   }
 }
 
@@ -104,8 +103,8 @@ function collectXMLdata(){
            for (prop in obj) {
               //check that it's not an inherited property
               if(obj.hasOwnProperty(prop)){
-                collectAray('650',subjectArray);
                 collectAray('245',titleArray);
+                collectAray('650',subjectArray);
                 collectAray('520',summaryArray);
                 if (debug){
                   console.log(util.inspect(datafieldObj, showHidden=true, depth=6, colorize=true));
@@ -121,14 +120,25 @@ function collectXMLdata(){
            }
         }
 
-        if (debug2){
-       //   var testTitle=datafieldObj.
-          var titleObj = titleArray[1][0]._;
-          var authorObj = titleArray[1][1]._;
-          console.log(titleObj);
-          console.log(authorObj);
-        }
+     //   var testTitle=datafieldObj.
+        var bookObj={};
+        var titleStr = titleArray[1][0]._;
+        var tmpArr=titleStr.split(' /');
+        titleStr = tmpArr[0];
+        var authorStr = titleArray[1][2]._;
+        tmpArr=authorStr.split(';');
+        authorStr = tmpArr[0];
+        var rc=typeof titleArray;
+        console.log(rc);
+        console.log(titleStr);
+        console.log(authorStr);
+
   });
+}
+
+function getTitle(){
+  title=titleArray[1][0]._;
+
 }
 
 function sendRequest(url){
