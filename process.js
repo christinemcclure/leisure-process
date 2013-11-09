@@ -71,7 +71,7 @@ series();
 
 function finish() { 
   logMsg('Processing complete');
-  log('Finished processing. Check '+logFile+' for details.'); 
+  console.log('Finished processing. Check '+logFile+' for details.');
 }
 
 function getAPIdata(callback){
@@ -86,12 +86,12 @@ function init(callback){
     if (exists){
       fs.unlink(logFile, function (error) {
         if (error) throw error;
-        if (debug) log('successfully deleted log file before processing: ' + logFile);
+        if (debug) console.log('successfully deleted log file before processing: ' + logFile);
       });
     }
     logMsg('Processing started. Using Input file name: '+isbnFile);
   });
-  log(moment().format('YYYY-MM-DD HH:MM') + '\nProcessing started. Using ' + isbnFile + ' and writing messages to "'+ logFile +'".');
+  console.log(moment().format('YYYY-MM-DD HH:MM') + '\nProcessing started. Using ' + isbnFile + ' and writing messages to "'+ logFile +'".');
   setTimeout(function() { callback(); }, 100);
 }
 
@@ -102,7 +102,7 @@ function processISBNFile(callback){
       if(error){
         throw error;
       }
-      //log('The file data is \n'+ fileData);
+      //console.log('The file data is \n'+ fileData);
       var isbns=fileData.split('\n');
       var badISBNs=0;
       var dupeISBNs = 0;
@@ -118,7 +118,7 @@ function processISBNFile(callback){
           else {
             dupeISBNs += 1;
           }
-          if (debug) log('here is the array of ISBNS to process '+isbnsToProcess.toString());
+          if (debug) console.log('here is the array of ISBNS to process '+isbnsToProcess.toString());
         }
         else{
           logMsg('"' +tempISBN + '" is not a valid ISBN');
@@ -144,18 +144,18 @@ function checkISBN(isbn) {
   var exp, ret;
   if  (isbn.length === 10) {
     exp = new RegExp(/\b(^\d{10}$|^\d{9}x)$\b/i); // ISBN-10 can be 10 digits, or 9 digits + x (checksum of 10)
-    if (debug) log('the length of '+isbn +' is '+ isbn.length);
+    if (debug) console.log('the length of '+isbn +' is '+ isbn.length);
   }
   else if (isbn.length === 13){
     exp = new RegExp(/^978\d{10}$/); // ISBN-13 has different checksum logic. only digits
   }
   else {
-    log('"'+isbn+'" is a not valid isbn.');
+    console.log('"'+isbn+'" is a not valid isbn.');
     return false; // quick check for length
     //
   }
     ret=exp.test(isbn);
-    if (debug) log('regex returns '+ret);
+    if (debug) console.log('regex returns '+ret);
     return ret;
 }
 
@@ -177,7 +177,7 @@ function createURL(isbn){
   url = 'http://www.worldcat.org/webservices/catalog/content/isbn/' + isbn + '?wskey='+key;
   // use oaiauth later
   url = encodeURI(url);// necessary?
-  if(debug) log('url is '+url);
+  if(debug) console.log('url is '+url);
   return url;
 }
 
@@ -197,13 +197,13 @@ function collectXMLdata(){
                 collectAray('245',titleArray);
                 collectAray('520',summaryArray);
                 if (debug){
-                  log(util.inspect(datafieldObj, showHidden=true, depth=6, colorize=true));
-                  log('  TITLE');
-                  log(util.inspect(titleArray, showHidden=true, depth=6, colorize=true));
-                  log('  SUMMARY ');
-                  log(util.inspect(summaryArray, showHidden=true, depth=6, colorize=true));
-                  log('  SUBJECTS ');
-                  log(util.inspect(subjectArray, showHidden=true, depth=6, colorize=true));
+                  console.log(util.inspect(datafieldObj, showHidden=true, depth=6, colorize=true));
+                  console.log('  TITLE');
+                  console.log(util.inspect(titleArray, showHidden=true, depth=6, colorize=true));
+                  console.log('  SUMMARY ');
+                  console.log(util.inspect(summaryArray, showHidden=true, depth=6, colorize=true));
+                  console.log('  SUBJECTS ');
+                  console.log(util.inspect(subjectArray, showHidden=true, depth=6, colorize=true));
                 }
               }
            }
@@ -215,7 +215,7 @@ function sendRequest(url){
   url = createURL();
   request(url, function (error, response, xmlData) {
     if (!error && response.statusCode == 200) {
-  //    log(xmlData);
+  //    console.log(xmlData);
       jsonData = parser.parseString(xmlData);
     }
   })
@@ -223,12 +223,8 @@ function sendRequest(url){
 
 function collectAray(tag,tmpArray){
   if (obj[prop]['tag']==tag){ // find
-    if (debug) log('found a '+tag+' item.');
+    if (debug) console.log('found a '+tag+' item.');
     i++;
     tmpArray[i]=obj['subfield'];
   }
-}
-
-function log(msg){
-  console.log(msg+'\n');
 }
