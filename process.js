@@ -7,6 +7,7 @@ var parser = {};
 
 // Variables
 var debug = false;
+var debug2 = true;
 var moment = require('moment');// for date formatting
   moment().format();
 var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
@@ -82,7 +83,8 @@ function getAndProcessData(callback){
 function loopThroughISBNfile(){
   for (var i=0; i<isbnsToProcess.length; i++){
     var url = createURL(isbnsToProcess[i]);
-    console.log(url);
+    collectXMLdata();
+    sendRequest(url);
   }
 }
 
@@ -102,7 +104,7 @@ function collectXMLdata(){
                 collectAray('650',subjectArray);
                 collectAray('245',titleArray);
                 collectAray('520',summaryArray);
-                if (debug){
+                if (debug2){
                   console.log(util.inspect(datafieldObj, showHidden=true, depth=6, colorize=true));
                   console.log('  TITLE');
                   console.log(util.inspect(titleArray, showHidden=true, depth=6, colorize=true));
@@ -124,7 +126,7 @@ function sendRequest(url){
   //    console.log(xmlData);
       jsonData = parser.parseString(xmlData);
     }
-  })
+  });
 }
 
 
