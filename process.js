@@ -22,7 +22,7 @@ var jsonData = '';
 var jsonString = "";
 var jsonObj, testStr;
 var datafieldObj, obj, prop;
-var subjectArray=[],summaryArray=[], testArr=[];
+var subjectArray=[], testArr=[];
 var countLoop=0;
 
 
@@ -110,7 +110,7 @@ function collectXMLdata(){
               //check that it's not an inherited property
               if(obj.hasOwnProperty(prop)){
                 getTitleAndAuthorInfo();
-                //getSummaryInfo();
+                getSummaryInfo();
                 collectAray('650',subjectArray);
               }
            }
@@ -132,10 +132,16 @@ function collectXMLdata(){
   });
 }
 
-//function getSummaryInfo(){
-//                  collectAray('520',summaryArray);
-//
-//}
+function getSummaryInfo(){
+  var summaryArray=[];
+  collectAray('520',summaryArray);
+  if (obj[prop]['tag']=='520'){ // find
+    var summaryStr = obj['subfield'][0]['_'];
+    summaryStr = summaryStr.trim();
+    if (debug) console.log(summaryStr);
+    book['summary']=summaryStr;
+  }
+}
 
 function getTitleAndAuthorInfo(){
   var titleArray=[];
