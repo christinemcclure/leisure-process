@@ -140,7 +140,11 @@ function getTitleAndAuthorInfo(){
         var titleStr = obj['subfield'][0]['_'];// otherwise only title
         var authorStr = obj['subfield'][1]['_'];
       }
-      if (debug2) console.log('*** '+titleStr + ' *** '+ authorStr);
+      var exp = new RegExp(/ \/$/); // strip training ' /' from title
+      titleStr = titleStr.replace(exp,'');
+      exp = new RegExp(/.$/);
+      authorStr = authorStr.replace(exp,'');
+      if (debug2) console.log('***'+titleStr + '***'+ authorStr);
   }
 }
 
