@@ -115,9 +115,14 @@ function collectXMLdata(){
                     var typeA=obj['subfield'];
                     if (typeA.length == 3){
                       var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];
-                      console.log('***'+titleStr);
+                      var authorStr = obj['subfield'][2]['_'];
+                    }
+                    else {
+                      var titleStr = obj['subfield'][0]['_'];
+                      var authorStr = obj['subfield'][1]['_'];
                     }
 
+                      console.log('*** '+titleStr + ' *** '+ authorStr);
                   
                 }
 
