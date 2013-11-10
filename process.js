@@ -99,11 +99,29 @@ function collectXMLdata(){
         datafieldObj = jsonObj.record.datafield;
         i=0;
         for (var key in datafieldObj) {
+
+          var titleStr='';
+
            obj = datafieldObj[key];
            for (prop in obj) {
               //check that it's not an inherited property
               if(obj.hasOwnProperty(prop)){
                 collectAray('245',titleArray);
+
+
+
+
+                if (obj[prop]['tag']=='245'){ // find
+                    var typeA=obj['subfield'];
+                    if (typeA.length == 3){
+                      var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];
+                      console.log('***'+titleStr);
+                    }
+
+                  
+                }
+
+
                 collectAray('650',subjectArray);
                 collectAray('520',summaryArray);
                 if (debug){
@@ -129,12 +147,19 @@ function collectXMLdata(){
         tmpArr=authorStr.split(';');
         authorStr = tmpArr[0];
         var rc=typeof titleArray;
-        console.log(rc);
-        console.log(titleStr);
-        console.log(authorStr);
 
   });
 }
+
+
+function collectAray(tag,tmpArray){
+  if (obj[prop]['tag']==tag){ // find
+    if (debug) console.log('found a '+tag+' item.');
+    i++;
+    tmpArray[i]=obj['subfield'];
+  }
+}
+
 
 function getTitle(){
   title=titleArray[1][0]._;
@@ -159,16 +184,6 @@ function createURL(isbn){
   if(debug) console.log('url is '+url);
   return url;
 }
-
-
-function collectAray(tag,tmpArray){
-  if (obj[prop]['tag']==tag){ // find
-    if (debug) console.log('found a '+tag+' item.');
-    i++;
-    tmpArray[i]=obj['subfield'];
-  }
-}
-
 
 
 function init(callback){
