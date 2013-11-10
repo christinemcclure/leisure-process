@@ -115,8 +115,9 @@ function collectXMLdata(){
                 if (obj[prop]['tag']=='520'){
                   getSummaryInfo();
                 }
-
-                //getSubjectsInfo();
+                if (obj[prop]['tag']=='650'){
+                 // getSubjectsInfo();
+                }
               }
            }
         }
@@ -138,20 +139,20 @@ function collectXMLdata(){
 }
 
 function getSubjectsInfo(){
-  var subjectsArray=[];
-  collectAray('650',subjectsArray);
-  if (obj[prop]['tag']=='650'){ // find
-//    var summaryStr = obj['subfield'][0]['_'];
-//    summaryStr = summaryStr.trim();
-//    if (debug) console.log(summaryStr);
-//    book['summary']=summaryStr;
+  var tmpArr=[]
+  collectAray('650',tmpArr);
+  var subjectsArray=obj['subfield'];
+  if (debug2){
+    console.log(util.inspect(subjectsArray, showHidden=true, depth=6, colorize=true));
+//    console.log(util.inspect(tmpArr, showHidden=true, depth=6, colorize=true));
   }
+
 }
 
 
 function getSummaryInfo(){
   var summaryArray=[];
-  collectAray('520',summaryArray);
+//  collectAray('520',summaryArray);
   var summaryStr = obj['subfield'][0]['_'];
   summaryStr = summaryStr.trim();
   if (debug) console.log(summaryStr);
@@ -160,7 +161,7 @@ function getSummaryInfo(){
 
 function getTitleAndAuthorInfo(){
   var titleArray=[];
-  collectAray('245',titleArray);
+//  collectAray('245',titleArray);
   var typeA=obj['subfield'];
   if (typeA.length == 3){
     var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];// get title and subtitle
@@ -179,16 +180,6 @@ function getTitleAndAuthorInfo(){
   if (debug) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
   
 }
-
-
-function collectAray(tag,tmpArray){
-  if (obj[prop]['tag']==tag){ // find
-    if (debug) console.log('found a '+tag+' item.');
-    i++;
-    tmpArray[i]=obj['subfield'];
-  }
-}
-
 
 
 function sendRequest(url){
