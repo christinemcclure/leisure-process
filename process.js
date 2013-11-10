@@ -14,6 +14,7 @@ var debug = false;
 var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
 var isbn='';
 var isbnFile = 'isbns-sample.txt';
+var dataFile = './leisureBooksJSON.txt';
 var isbnsToProcess=[];
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var url= '';
@@ -195,6 +196,16 @@ function init(callback){
       });
     }
     logMsg('Processing started. Using Input file name: '+isbnFile);
+  });
+  fs.exists(dataFile, function (exists) {
+    if (exists){
+      fs.unlink(dataFile, function (error) {
+        if (error) throw error;
+      });
+    }
+    fs.appendFile(dataFile, 'var leisureBooks=[\n', function (error) {
+      if (error) throw error;
+    });
   });
   console.log(moment().format('YYYY-MM-DD HH:MM') + '\nProcessing started. Using ' + isbnFile + ' and writing messages to "'+ logFile +'".');
   setTimeout(function() { callback(); }, 100);
