@@ -8,6 +8,7 @@ var moment = require('moment');// for date formatting
   moment().format();
 
 // Variables
+var book = {};
 var debug2 = true;
 var debug = false;
 var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
@@ -144,7 +145,9 @@ function getTitleAndAuthorInfo(){
       titleStr = titleStr.replace(exp,'');
       exp = new RegExp(/.$/);
       authorStr = authorStr.replace(exp,'');
-      if (debug2) console.log('***'+titleStr + '***'+ authorStr);
+      book['title']=titleStr;
+      book['author']=authorStr;
+      console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
   }
 }
 
