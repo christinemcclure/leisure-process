@@ -106,26 +106,8 @@ function collectXMLdata(){
            for (prop in obj) {
               //check that it's not an inherited property
               if(obj.hasOwnProperty(prop)){
-                collectAray('245',titleArray);
 
-
-
-
-                if (obj[prop]['tag']=='245'){ // find
-                    var typeA=obj['subfield'];
-                    if (typeA.length == 3){
-                      var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];
-                      var authorStr = obj['subfield'][2]['_'];
-                    }
-                    else {
-                      var titleStr = obj['subfield'][0]['_'];
-                      var authorStr = obj['subfield'][1]['_'];
-                    }
-
-                      console.log('*** '+titleStr + ' *** '+ authorStr);
-                  
-                }
-
+                getTitleAndAuthorInfo();
 
                 collectAray('650',subjectArray);
                 collectAray('520',summaryArray);
@@ -143,17 +125,23 @@ function collectXMLdata(){
            }
         }
 
-     //   var testTitle=datafieldObj.
-        var bookObj={};
-        var titleStr = titleArray[1][0]._;
-        var tmpArr=titleStr.split(' /');
-        titleStr = tmpArr[0];
-        var authorStr = titleArray[1][2]._;
-        tmpArr=authorStr.split(';');
-        authorStr = tmpArr[0];
-        var rc=typeof titleArray;
-
   });
+}
+
+function getTitleAndAuthorInfo(){
+  collectAray('245',titleArray);
+  if (obj[prop]['tag']=='245'){ // find
+      var typeA=obj['subfield'];
+      if (typeA.length == 3){
+        var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];// get title and subtitle
+        var authorStr = obj['subfield'][2]['_'];//
+      }
+      else {
+        var titleStr = obj['subfield'][0]['_'];// otherwise only title
+        var authorStr = obj['subfield'][1]['_'];
+      }
+      if (debug2) console.log('*** '+titleStr + ' *** '+ authorStr);
+  }
 }
 
 
