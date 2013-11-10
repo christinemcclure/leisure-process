@@ -116,7 +116,7 @@ function collectXMLdata(){
                   getSummaryInfo();
                 }
                 if (obj[prop]['tag']=='650'){
-                 // getSubjectsInfo();
+                  getSubjectsInfo();
                 }
               }
            }
@@ -139,8 +139,6 @@ function collectXMLdata(){
 }
 
 function getSubjectsInfo(){
-  var tmpArr=[]
-  collectAray('650',tmpArr);
   var subjectsArray=obj['subfield'];
   if (debug2){
     console.log(util.inspect(subjectsArray, showHidden=true, depth=6, colorize=true));
