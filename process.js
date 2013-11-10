@@ -22,7 +22,7 @@ var jsonData = '';
 var jsonString = "";
 var jsonObj, testStr;
 var datafieldObj, obj, prop;
-var subjectArray=[], titleArray=[],summaryArray=[], testArr=[];
+var subjectArray=[],summaryArray=[], testArr=[];
 var countLoop=0;
 
 
@@ -112,8 +112,8 @@ function collectXMLdata(){
               //check that it's not an inherited property
               if(obj.hasOwnProperty(prop)){
                 getTitleAndAuthorInfo();
+                //getSummaryInfo();
                 collectAray('650',subjectArray);
-                collectAray('520',summaryArray);
               }
            }
         }
@@ -134,7 +134,13 @@ function collectXMLdata(){
   });
 }
 
+//function getSummaryInfo(){
+//                  collectAray('520',summaryArray);
+//
+//}
+
 function getTitleAndAuthorInfo(){
+  var titleArray=[];
   collectAray('245',titleArray);
   if (obj[prop]['tag']=='245'){ // find
       var typeA=obj['subfield'];
@@ -166,10 +172,6 @@ function collectAray(tag,tmpArray){
 }
 
 
-function getTitle(){
-  title=titleArray[1][0]._;
-
-}
 
 function sendRequest(url){
   request(url, function (error, response, xmlData) {
