@@ -105,8 +105,6 @@ function collectXMLdata(){
         countLoop++;
         for (var key in datafieldObj) {
 
-          var titleStr='';
-
            obj = datafieldObj[key];
            for (prop in obj) {
               //check that it's not an inherited property
