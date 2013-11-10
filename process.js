@@ -4,12 +4,12 @@ var fs = require('fs'),
 var util = require('util'); // to inspect objects
 var request = require('request');
 var parser = {};
+var moment = require('moment');// for date formatting
+  moment().format();
 
 // Variables
 var debug2 = true;
 var debug = false;
-var moment = require('moment');// for date formatting
-  moment().format();
 var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
 var isbn='';
 var isbnFile = 'isbns-sample.txt';
