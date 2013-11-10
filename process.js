@@ -22,7 +22,7 @@ var jsonData = '';
 var jsonString = "";
 var jsonObj, testStr;
 var datafieldObj, obj, prop;
-var subjectArray=[], testArr=[];
+var testArr=[];
 var countLoop=0;
 
 
@@ -109,9 +109,14 @@ function collectXMLdata(){
            for (prop in obj) {
               //check that it's not an inherited property
               if(obj.hasOwnProperty(prop)){
-                getTitleAndAuthorInfo();
-                getSummaryInfo();
-                collectAray('650',subjectArray);
+                if (obj[prop]['tag']=='245'){
+                  getTitleAndAuthorInfo();
+                }
+                if (obj[prop]['tag']=='520'){
+                  getSummaryInfo();
+                }
+
+                //getSubjectsInfo();
               }
            }
         }
@@ -132,38 +137,47 @@ function collectXMLdata(){
   });
 }
 
+function getSubjectsInfo(){
+  var subjectsArray=[];
+  collectAray('650',subjectsArray);
+  if (obj[prop]['tag']=='650'){ // find
+//    var summaryStr = obj['subfield'][0]['_'];
+//    summaryStr = summaryStr.trim();
+//    if (debug) console.log(summaryStr);
+//    book['summary']=summaryStr;
+  }
+}
+
+
 function getSummaryInfo(){
   var summaryArray=[];
   collectAray('520',summaryArray);
-  if (obj[prop]['tag']=='520'){ // find
-    var summaryStr = obj['subfield'][0]['_'];
-    summaryStr = summaryStr.trim();
-    if (debug) console.log(summaryStr);
-    book['summary']=summaryStr;
-  }
+  var summaryStr = obj['subfield'][0]['_'];
+  summaryStr = summaryStr.trim();
+  if (debug) console.log(summaryStr);
+  book['summary']=summaryStr;
 }
 
 function getTitleAndAuthorInfo(){
   var titleArray=[];
   collectAray('245',titleArray);
-  if (obj[prop]['tag']=='245'){ // find
-      var typeA=obj['subfield'];
-      if (typeA.length == 3){
-        var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];// get title and subtitle
-        var authorStr = obj['subfield'][2]['_'];//
-      }
-      else {
-        var titleStr = obj['subfield'][0]['_'];// otherwise only title
-        var authorStr = obj['subfield'][1]['_'];
-      }
-      var exp = new RegExp(/ \/$/); // strip training ' /' from title
-      titleStr = titleStr.replace(exp,'');
-      exp = new RegExp(/.$/);
-      authorStr = authorStr.replace(exp,'');
-      book['title']=titleStr;
-      book['author']=authorStr;
-      if (debug) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
+  var typeA=obj['subfield'];
+  if (typeA.length == 3){
+    var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];// get title and subtitle
+    var authorStr = obj['subfield'][2]['_'];//
   }
+  else {
+    var titleStr = obj['subfield'][0]['_'];// otherwise only title
+    var authorStr = obj['subfield'][1]['_'];
+  }
+  var exp = new RegExp(/ \/$/); // strip training ' /' from title
+  titleStr = titleStr.replace(exp,'');
+  exp = new RegExp(/.$/);
+  authorStr = authorStr.replace(exp,'');
+  book['title']=titleStr;
+  book['author']=authorStr;
+  if (debug) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
+  
 }
 
 
