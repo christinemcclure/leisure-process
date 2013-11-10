@@ -23,6 +23,8 @@ var jsonString = "";
 var jsonObj, testStr;
 var datafieldObj, obj, prop;
 var subjectArray=[], titleArray=[],summaryArray=[], testArr=[];
+var flag=0;
+
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
 function series() {
@@ -73,9 +75,10 @@ series();
 //// FUNCTIONS
 
 
-function finish() { 
+function finish() {
   logMsg('Processing complete');
   console.log('Finished processing. Check '+logFile+' for details.');
+  flag=1;
 }
 
 function getAndProcessData(callback){
@@ -88,7 +91,9 @@ function loopThroughISBNfile(){
     isbn=isbnsToProcess[i];
     var url = createURL(isbn);
     sendRequest(url);
+    console.log('i is '+i+' length is '+isbnsToProcess.length + ' flag is '+flag);
   }
+    console.log('i is '+i+' length is '+isbnsToProcess.length + ' flag is '+flag);
 }
 
 
@@ -110,7 +115,6 @@ function collectXMLdata(){
               if(obj.hasOwnProperty(prop)){
 
                 getTitleAndAuthorInfo();
-
                 collectAray('650',subjectArray);
                 collectAray('520',summaryArray);
                 if (debug){
@@ -126,6 +130,13 @@ function collectXMLdata(){
               }
            }
         }
+
+    console.log('flag here is '+flag);
+    if (flag==0){
+      fs.appendFile(dataFile, JSON.stringify(book)+',\n', function (error) {
+        if (error) throw error;
+      });
+    }
 
   });
 }
