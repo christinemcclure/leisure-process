@@ -111,25 +111,14 @@ function collectXMLdata(){
            for (prop in obj) {
               //check that it's not an inherited property
               if(obj.hasOwnProperty(prop)){
-
                 getTitleAndAuthorInfo();
                 collectAray('650',subjectArray);
                 collectAray('520',summaryArray);
-                if (debug){
-                  console.log(util.inspect(datafieldObj, showHidden=true, depth=6, colorize=true));
-                  console.log('  TITLE');
-                  console.log(util.inspect(titleArray, showHidden=true, depth=6, colorize=true));
-                  console.log('  SUMMARY ');
-                  console.log(util.inspect(summaryArray, showHidden=true, depth=6, colorize=true));
-                  console.log('  SUBJECTS ');
-                  console.log(util.inspect(subjectArray, showHidden=true, depth=6, colorize=true));
-                }
-
               }
            }
         }
 
-    console.log('i is '+i+' length is '+isbnsToProcess.length + ' count is '+countLoop);
+    if (debug) console.log('i is '+i+' length is '+isbnsToProcess.length + ' count is '+countLoop);
 
     if (countLoop==isbnsToProcess.length){
       fs.appendFile(dataFile, JSON.stringify(book)+'\n];\n', function (error) {
@@ -163,7 +152,7 @@ function getTitleAndAuthorInfo(){
       authorStr = authorStr.replace(exp,'');
       book['title']=titleStr;
       book['author']=authorStr;
-      console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
+      if (debug) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
   }
 }
 
