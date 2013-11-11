@@ -45,6 +45,10 @@ function series() {
           //  For each element of the "to be processed" array:
           //    - Send API request to OCLC for that ISBN
           //    - Receive request. If error, write to log file
+          //    - Take only title, author, summary, ISBNs, and Subjects from the results
+          //    - Construct valid JSON object
+          //    - Append to output file
+          //    - Write success message to log file.
       ];
  
     function next() {
@@ -52,18 +56,12 @@ function series() {
         if (callback) {
             callback(next);
         }
-        else {
-            finish();
-        }
+
     }
     next();
 };
 
-//    - Take only title, author, summary, ISBNs, and Subjects from the results
-//    - Construct valid JSON object
-//    - Append to output file
-//    - Write success message to log file.
-//    - Remove ISBN from array.
+
 //
   
 
@@ -76,9 +74,6 @@ series();
 
 ////FUNCTIONS
 
-function finish() {
-
-}
 
 function validateDataFile(){
   var data, tmpObj;
@@ -265,7 +260,7 @@ function init(callback){
       if (error) throw error;
     });
   });
-  console.log(moment().format('YYYY-MM-DD HH:MM') + '\nProcessing started. Using ' + isbnFile + ' and writing messages to "'+ logFile +'".');
+  console.log(moment().format('YYYY-MM-DD HH:MM') + '\nProcessing started. Using ' + isbnFile + ' for data file and writing messages to "'+ logFile +'".');
   setTimeout(function() { callback(); }, 100);
 
 }
