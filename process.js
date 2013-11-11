@@ -18,7 +18,6 @@ var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
 var isbnsToProcess=[];
 var isbn='';
 var url= '';
-var testStr;
 var datafieldObj, obj, prop;
 var testArr=[];
 var summaryMsg ='';
