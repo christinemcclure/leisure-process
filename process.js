@@ -23,6 +23,7 @@ var jsonString = "";
 var jsonObj, testStr;
 var datafieldObj, obj, prop;
 var testArr=[];
+var summaryMsg ='';
 var countLoop=0;
 
 
@@ -41,7 +42,7 @@ function series() {
         getAndProcessData
           //  For each element of the "to be processed" array:
           //    - Send API request to OCLC for that ISBN
-          //    - Receive request. If error, write to log file        
+          //    - Receive request. If error, write to log file
       ];
  
     function next() {
@@ -69,15 +70,11 @@ function series() {
 /// MAIN PROCESSING SECTION
 
 series();
-//collectXMLdata();
-//sendRequest(9780670020836);
 
-//// FUNCTIONS
 
+////FUNCTIONS
 
 function finish() {
-  logMsg('Processing complete');
-  console.log('Finished processing. Check '+logFile+' for details.');
 }
 
 function getAndProcessData(callback){
@@ -103,6 +100,8 @@ function collectXMLdata(){
         datafieldObj = jsonObj.record.datafield;
         i=0;
         countLoop++;
+               logMsg(isbn+' processed successfully.');
+
         for (var key in datafieldObj) {
 
            obj = datafieldObj[key];
@@ -128,6 +127,10 @@ function collectXMLdata(){
       fs.appendFile(dataFile, JSON.stringify(book)+'\n];\n', function (error) {
         if (error) throw error;
       });
+      logMsg(summaryMsg);
+      logMsg('Processing complete');
+      console.log('Finished processing. Check '+logFile+' for details.');
+
     }
     else{
       fs.appendFile(dataFile, JSON.stringify(book)+',\n', function (error) {
@@ -236,6 +239,7 @@ function init(callback){
   });
   console.log(moment().format('YYYY-MM-DD HH:MM') + '\nProcessing started. Using ' + isbnFile + ' and writing messages to "'+ logFile +'".');
   setTimeout(function() { callback(); }, 100);
+
 }
 
 
@@ -268,7 +272,8 @@ function processISBNFile(callback){
           badISBNs += 1;
         }
       }
-      logMsg('There were '+isbns.length+' lines in the file. '+ isbnsToProcess.length+' will be processed to collect bibliographic data. '+badISBNs +' did not contain a valid ISBN, and ' + dupeISBNs +' were duplicates.');
+        summaryMsg ='There were '+isbns.length+' lines in the file. '+ isbnsToProcess.length+' were processed to collect bibliographic data. '+badISBNs +' did not contain a valid ISBN, and ' + dupeISBNs +' were duplicates.';
+
     });
   setTimeout(function() { callback(); }, 100);
  }
