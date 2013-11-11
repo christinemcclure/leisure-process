@@ -96,6 +96,56 @@ function init(callback){
 }
 
 
+function processISBNFile(callback){
+    fs.readFile(path+isbnFile, 'utf8', function(error, fileData) { // cycle through input file
+      // the data is passed to the callback in the second argument
+      if(error){
+        throw error;
+      }
+      if (debug) console.log('The file data is \n'+ fileData);
+      var isbns=fileData.split('\n');
+      var badISBNs=0;
+      var dupeISBNs = 0;
+      for (var i=0; i< isbns.length; i++){
+        var isbnArr=isbns[i].split(' ');
+        var tempISBN = isbnArr[0].trim().replace(/(\r\n|\n|\r)/gm,'');;// isbn will be first element in the array. Ignore spaces and line breaks
+        var rt = checkISBN(tempISBN);// send to validator function
+        if (rt==true){
+          rt = checkIfInArray(isbnsToProcess,tempISBN);
+          if (rt != true) {
+            isbnsToProcess.push(tempISBN); // only add if not already in array
+          }
+          else {
+            dupeISBNs += 1;
+          }
+          if (debug) console.log('here is the array of ISBNS to process '+isbnsToProcess.toString());
+        }
+        else{
+          logMsg('"' +tempISBN + '" is not a valid ISBN');
+          badISBNs += 1;
+        }
+      }
+        summaryMsg ='There were '+isbns.length+' lines in the file. '+ isbnsToProcess.length+' were processed to collect bibliographic data. '+badISBNs +' did not contain a valid ISBN, and ' + dupeISBNs +' were duplicates.';
+
+    });
+  setTimeout(function() { callback(); }, 100); // set callback for ordered processing
+ }
+
+function getAndProcessData(callback){
+  loopThroughISBNfile(); // need a callback so logging is in order
+  setTimeout(function() { callback(); }, 100);
+}
+
+
+function loopThroughISBNfile(){
+  for (var i=0; i<isbnsToProcess.length; i++){
+    isbn=isbnsToProcess[i];
+    var url = createURL(isbn);
+    sendRequest(url, isbn, function(){
+    });
+  }
+}
+
 
 function getSubjectsInfo(obj){
   var j=0;
@@ -221,20 +271,6 @@ function validateDataFile(){
 
 
 
-function getAndProcessData(callback){
-  loopThroughISBNfile();
-  setTimeout(function() { callback(); }, 100);
-}
-
-function loopThroughISBNfile(){
-  for (var i=0; i<isbnsToProcess.length; i++){
-    isbn=isbnsToProcess[i];
-    var url = createURL(isbn);
-    sendRequest(url, isbn, function(){
-    });
-  }
-}
-
 function finishFile(callback){
         fs.appendFile(path+dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
         if (error) throw error;
@@ -291,41 +327,6 @@ function createURL(isbn){
 }
 
 
-
-function processISBNFile(callback){
-    fs.readFile(path+isbnFile, 'utf8', function(error, fileData) {
-      // the data is passed to the callback in the second argument
-      if(error){
-        throw error;
-      }
-      //console.log('The file data is \n'+ fileData);
-      var isbns=fileData.split('\n');
-      var badISBNs=0;
-      var dupeISBNs = 0;
-      for (var i=0; i< isbns.length; i++){
-        var isbnArr=isbns[i].split(' ');
-        var tempISBN = isbnArr[0].trim().replace(/(\r\n|\n|\r)/gm,"");;// isbn will be first element in the array. Ignore spaces and line breaks
-        var rt = checkISBN(tempISBN);
-        if (rt==true){
-          rt = checkIfInArray(isbnsToProcess,tempISBN);
-          if (rt != true) {
-            isbnsToProcess.push(tempISBN); // only add if not already in array
-          }
-          else {
-            dupeISBNs += 1;
-          }
-          if (debug) console.log('here is the array of ISBNS to process '+isbnsToProcess.toString());
-        }
-        else{
-          logMsg('"' +tempISBN + '" is not a valid ISBN');
-          badISBNs += 1;
-        }
-      }
-        summaryMsg ='There were '+isbns.length+' lines in the file. '+ isbnsToProcess.length+' were processed to collect bibliographic data. '+badISBNs +' did not contain a valid ISBN, and ' + dupeISBNs +' were duplicates.';
-
-    });
-  setTimeout(function() { callback(); }, 100);
- }
 
 function logMsg(msg){
   var moment = require('moment');
