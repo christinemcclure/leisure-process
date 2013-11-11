@@ -18,7 +18,6 @@ var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
 var isbnsToProcess=[];
 var isbn='';
 var url= '';
-var jsonString = "";
 var testStr;
 var datafieldObj, obj, prop;
 var testArr=[];
@@ -107,7 +106,7 @@ function loopThroughISBNfile(){
 
 
 function collectXMLdata(isbn){
-  jsonString='';
+  var jsonString='';
   parser = new xml2js.Parser({attrkey : 'oclc'});
   parser.addListener('end', function(result) {
         jsonString = JSON.stringify(result);
