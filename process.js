@@ -236,7 +236,7 @@ function init(callback){
         if (error) throw error;
       });
     }
-    fs.appendFile(dataFile, 'var leisureBooks=[\n', function (error) {
+    fs.appendFile(dataFile, '{"leisureBooks":[\n', function (error) {
       if (error) throw error;
     });
   });
