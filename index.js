@@ -81,7 +81,7 @@ function getSubjectsInfo(obj){
   if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true)+'\n***\n');
 
   var keyArr=Object.keys(tmp);
-  console.log(util.inspect(keyArr));
+  console.log(util.inspect(keyArr)+ ' length='+keyArr.length);
 //var tmp2=[];
 //// tmp[1][0].length number of items to get
 // tmp2=tmp[3][1]['_']; // isolated string
