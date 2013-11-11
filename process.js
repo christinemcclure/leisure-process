@@ -103,7 +103,7 @@ function loopThroughISBNfile(){
 
 
 function collectXMLdata(isbn){
-  var jsonString='';
+  var jsonString, datafieldObj;
   parser = new xml2js.Parser({attrkey : 'oclc'});
   parser.addListener('end', function(result) {
         jsonString = JSON.stringify(result);
