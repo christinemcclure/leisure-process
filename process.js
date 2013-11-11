@@ -139,11 +139,25 @@ function collectXMLdata(){
 }
 
 function getSubjectsInfo(){
-  var subjectsArray=obj['subfield'];
-  if (debug2){
-    console.log(util.inspect(subjectsArray, showHidden=true, depth=6, colorize=true));
-//    console.log(util.inspect(tmpArr, showHidden=true, depth=6, colorize=true));
-  }
+  var subjectsObj=obj['subfield'];
+
+console.log(util.inspect(subjectsObj, showHidden=true, depth=8, colorize=true));
+
+//  console.log('length '+subjectsObj.length);
+//  console.log(util.inspect(subjectsObj, showHidden=true, depth=6, colorize=true));
+//  var i=0;
+//  for (var key in subjectsObj) {
+//     var tmpObj = subjectsObj[key];
+//     for (var prop in tmpObj) {
+//        //check that it's not an inherited property
+//        if(tmpObj.hasOwnProperty(prop)){
+//          i++;
+//          //console.log(tmpObj[prop]);
+//        }
+//     }
+//  }
+
+
 
 }
 
