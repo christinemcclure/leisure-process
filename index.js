@@ -65,6 +65,10 @@ series();
 
 ////FUNCTIONS
 
+
+// Call the ShowResults callback function for each
+// array element.
+
 function getSubjectsInfo(obj){
   var j=0;
   var tmp={};
@@ -80,14 +84,26 @@ function getSubjectsInfo(obj){
   }
   if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true)+'\n***\n');
 
-  var keyArr=Object.keys(tmp);
-  console.log(util.inspect(keyArr)+ ' length='+keyArr.length);
+
 //var tmp2=[];
 //// tmp[1][0].length number of items to get
-// tmp2=tmp[3][1]['_']; // isolated string
+ tmp2=tmp[3][1]['_']; // isolated string
 ////tmp2=tmp[1][0];
 //  if (debug2) console.log(tmp[3][1]['_']);
-  //if (debug2) console.log(typeof tmp2 + ' *** ' + tmp[3].length);
+  if (debug2) console.log(typeof tmp2 + ' *** ' + tmp[3].length);
+
+  for (var key in tmp) {
+      if (tmp.hasOwnProperty(key)) {
+        var length = tmp[key].length;
+        console.log (util.inspect([key])+ ' has a length of '+length);
+          for (var key2 in tmp[key]){
+            if (tmp.hasOwnProperty(key)){
+              console.log(tmp[key][key2]['_']);
+            }
+          }
+          
+      }
+  }
 
 
 }
