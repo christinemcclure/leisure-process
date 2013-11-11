@@ -25,6 +25,7 @@ var datafieldObj, obj, prop;
 var testArr=[];
 var summaryMsg ='';
 var countLoop=0;
+var count=0
 
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
@@ -86,7 +87,7 @@ function loopThroughISBNfile(){
   for (var i=0; i<isbnsToProcess.length; i++){
     isbn=isbnsToProcess[i];
     var url = createURL(isbn);
-    sendRequest(url);
+    currentISBN=sendRequest(url, isbn);
   }
 }
 
@@ -100,8 +101,6 @@ function collectXMLdata(){
         datafieldObj = jsonObj.record.datafield;
         i=0;
         countLoop++;
-               logMsg(isbn+' processed successfully.');
-
         for (var key in datafieldObj) {
 
            obj = datafieldObj[key];
@@ -115,7 +114,7 @@ function collectXMLdata(){
                   getSummaryInfo();
                 }
                 if (obj[prop]['tag']=='650'){
-                  getSubjectsInfo();
+                  //getSubjectsInfo();
                 }
               }
            }
@@ -197,14 +196,15 @@ function getTitleAndAuthorInfo(){
 }
 
 
-function sendRequest(url){
+function sendRequest(url, isbn){
   request(url, function (error, response, xmlData) {
     if (!error && response.statusCode == 200) {
   //    console.log(xmlData);
-      collectXMLdata();
+      collectXMLdata(isbn);
       jsonData = parser.parseString(xmlData);
     }
   });
+  return isbn;
 }
 
 
