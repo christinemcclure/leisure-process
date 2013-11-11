@@ -1,7 +1,18 @@
-var testKey = process.env.OCLC_DEV_KEY;
+var fs = require('fs');
+var util = require('util'); // to inspect objects
 
-console.log(testKey);
-series2();
+
+
+fs.readFile('leisureBooksJSON.txt', 'utf-8',function (err, data) {
+  if (err) throw err;
+  console.log(data);
+  var tempObj=JSON.parse(data);
+  console.log(util.inspect(tempObj, showHidden=true, depth=8, colorize=true));
+});
+
+
+
+var testKey = process.env.OCLC_DEV_KEY;
 
 function series2() {
     var callbackSeries =
@@ -42,3 +53,5 @@ function func2(callback, parm2){
 function finish(){
   console.log('done');
 }
+
+

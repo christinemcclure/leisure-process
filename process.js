@@ -124,7 +124,7 @@ function collectXMLdata(){
     if (debug) console.log('i is '+i+' length is '+isbnsToProcess.length + ' count is '+countLoop);
 
     if (countLoop==isbnsToProcess.length){
-      fs.appendFile(dataFile, JSON.stringify(book)+'\n];\n', function (error) {
+      fs.appendFile(dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
         if (error) throw error;
       });
       logMsg(book.isbn + ' was process successfully.');
