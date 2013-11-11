@@ -67,18 +67,22 @@ series();
 
 function getSubjectsInfo(obj){
   var j=0;
-  var tmp=[];
+  var tmp={};
+  var subArr=[];
   for (var i=0; i<obj.length; i++){
-      if (typeof obj[i]==['undefined']){
-        console.log(i +' is undefined');
+      if (typeof obj[i]==['undefined']){// remove blank elements from the array of ojbjects
+        continue;
       }
       else{
         j++;
         tmp[j]=obj[i];
       }
   }
-  if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true));
+  var tmp2=tmp[1];
 
+  if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true)+'\n***\n');
+  if (debug2) console.log(util.inspect(tmp2, showHidden=true, depth=6, colorize=true));
+  if (debug2) console.log(typeof tmp + ' ' + typeof tmp2);
 }
 
 
