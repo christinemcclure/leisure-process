@@ -87,7 +87,7 @@ function validateDataFile(){
 
     try{
      tmpObj=JSON.parse(data);
-     console.log('File OK')
+     logMsg(dataFile + ' has been verified as valid JSON.')
     }
     catch(e){
      console.log('An error has occurred: '+e.message)
@@ -112,7 +112,7 @@ function loopThroughISBNfile(){
 }
 
 
-function collectXMLdata(){
+function collectXMLdata(isbn){
   jsonString='';
   parser = new xml2js.Parser({attrkey : 'oclc'});
   parser.addListener('end', function(result) {
@@ -143,13 +143,9 @@ function collectXMLdata(){
     if (debug) console.log('i is '+i+' length is '+isbnsToProcess.length + ' count is '+countLoop);
 
     if (countLoop==isbnsToProcess.length){
-      fs.appendFile(dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
-        if (error) throw error;
-        logMsg(book.isbn + ' was process successfully.');
-        logMsg('Processing complete');
-        logMsg(summaryMsg);
-        console.log('Finished processing. Check '+logFile+' for details.');
-      });
+        finishFile(function(){
+          validateDataFile();
+        });
     }
     else{
     logMsg(book.isbn + ' was process successfully.');
@@ -158,6 +154,17 @@ function collectXMLdata(){
       });
     }
   });
+}
+
+function finishFile(callback){
+        fs.appendFile(dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
+        if (error) throw error;
+        logMsg(book.isbn + ' was process successfully.');
+        logMsg('Processing complete');
+        logMsg(summaryMsg);
+        console.log('Finished processing. Check '+logFile+' for details.');
+      });
+      setTimeout(function() { callback(); }, 100);
 }
 
 function getSubjectsInfo(){
