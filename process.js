@@ -19,7 +19,7 @@ var isbnsToProcess=[];
 var isbn='';
 var url= '';
 var jsonString = "";
-var jsonObj, testStr;
+var testStr;
 var datafieldObj, obj, prop;
 var testArr=[];
 var summaryMsg ='';
@@ -111,7 +111,7 @@ function collectXMLdata(isbn){
   parser = new xml2js.Parser({attrkey : 'oclc'});
   parser.addListener('end', function(result) {
         jsonString = JSON.stringify(result);
-        jsonObj = JSON.parse(jsonString);
+        var jsonObj = JSON.parse(jsonString);
         datafieldObj = jsonObj.record.datafield;
         i=0;
         countLoop++;
