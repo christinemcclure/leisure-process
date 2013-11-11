@@ -66,7 +66,19 @@ series();
 ////FUNCTIONS
 
 function getSubjectsInfo(obj){
-  if (debug2) console.log(util.inspect(obj, showHidden=true, depth=6, colorize=true));
+  var j=0;
+  var tmp=[];
+  for (var i=0; i<obj.length; i++){
+      if (typeof obj[i]==['undefined']){
+        console.log(i +' is undefined');
+      }
+      else{
+        j++;
+        tmp[j]=obj[i];
+      }
+  }
+  if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true));
+
 }
 
 
