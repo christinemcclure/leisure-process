@@ -80,24 +80,16 @@ function getSubjectsInfo(obj){
   }
   if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true)+'\n***\n');
 
-var tmp2=[];
+  var keyArr=Object.keys(tmp);
+  console.log(util.inspect(keyArr));
+//var tmp2=[];
+//// tmp[1][0].length number of items to get
+// tmp2=tmp[3][1]['_']; // isolated string
+////tmp2=tmp[1][0];
+//  if (debug2) console.log(tmp[3][1]['_']);
+  //if (debug2) console.log(typeof tmp2 + ' *** ' + tmp[3].length);
 
-        for (var key in tmp) {
-          i=0;
-           var obj = tmp[key];
-           for (var prop in obj) {
-              //check that it's not an inherited property
-              if(obj.hasOwnProperty(prop)){
-                i++;
-                console.log(' '+'obj = '+obj + ' key = '+key +' prop = '+prop)
-                
-              }
-           }
-        }
-tmp2=tmp[1][0]['_'];
-  if (debug2) console.log(util.inspect(tmp2, showHidden=true, depth=6, colorize=true));
 
-  if (debug2) console.log(typeof tmp + ' ' + typeof tmp2);
 }
 
 function getSummaryInfo(){
