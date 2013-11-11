@@ -233,7 +233,11 @@ function init(callback){
       if (error) throw error;
     });
   });
-  console.log(moment().format('YYYY-MM-DD HH:MM') + '\nProcessing started. Using ' + isbnFile + ' for data file and writing messages to "'+ logFile +'".');
+  console.log(moment().format('YYYY-MM-DD HH:MM') + 
+    '\nProcessing started.'+
+    '\n  Input file: \"' + isbnFile +
+    '\"\n  Log file: \"' + logFile +
+    '\"\n  JSON file created: \"' +dataFile + '\"');
   setTimeout(function() { callback(); }, 100);
 
 }
