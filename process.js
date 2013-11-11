@@ -19,7 +19,6 @@ var isbnsToProcess=[];
 var isbn='';
 var url= '';
 var datafieldObj, obj, prop;
-var testArr=[];
 var summaryMsg ='';
 var countLoop=0;
 var count=0;
