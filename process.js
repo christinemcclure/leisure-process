@@ -25,7 +25,8 @@ var datafieldObj, obj, prop;
 var testArr=[];
 var summaryMsg ='';
 var countLoop=0;
-var count=0
+var count=0;
+
 
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
@@ -76,7 +77,25 @@ series();
 ////FUNCTIONS
 
 function finish() {
+
 }
+
+function validateDataFile(){
+  var data, tmpObj;
+  fs.readFile(dataFile, 'utf-8',function (err, data) {
+    if (err) throw err;
+
+    try{
+     tmpObj=JSON.parse(data);
+     console.log('File OK')
+    }
+    catch(e){
+     console.log('An error has occurred: '+e.message)
+    }
+  });
+}
+
+
 
 function getAndProcessData(callback){
   loopThroughISBNfile();
@@ -126,12 +145,11 @@ function collectXMLdata(){
     if (countLoop==isbnsToProcess.length){
       fs.appendFile(dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
         if (error) throw error;
+        logMsg(book.isbn + ' was process successfully.');
+        logMsg('Processing complete');
+        logMsg(summaryMsg);
+        console.log('Finished processing. Check '+logFile+' for details.');
       });
-      logMsg(book.isbn + ' was process successfully.');
-      logMsg('Processing complete');
-      logMsg(summaryMsg);
-      console.log('Finished processing. Check '+logFile+' for details.');
-
     }
     else{
     logMsg(book.isbn + ' was process successfully.');
