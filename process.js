@@ -87,7 +87,8 @@ function loopThroughISBNfile(){
   for (var i=0; i<isbnsToProcess.length; i++){
     isbn=isbnsToProcess[i];
     var url = createURL(isbn);
-    currentISBN=sendRequest(url, isbn);
+    sendRequest(url, isbn, function(){
+    });
   }
 }
 
@@ -196,15 +197,16 @@ function getTitleAndAuthorInfo(){
 }
 
 
-function sendRequest(url, isbn){
+function sendRequest(url, isbn, callback){
   request(url, function (error, response, xmlData) {
     if (!error && response.statusCode == 200) {
-  //    console.log(xmlData);
+      book['isbn']=isbn;
+      console.log('from send request '+book.isbn);
       collectXMLdata(isbn);
       jsonData = parser.parseString(xmlData);
     }
   });
-  return isbn;
+  callback(isbn);
 }
 
 
