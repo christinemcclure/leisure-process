@@ -65,6 +65,72 @@ series();
 
 ////FUNCTIONS
 
+function getSubjectsInfo(obj){
+  if (debug2) console.log(util.inspect(obj, showHidden=true, depth=6, colorize=true));
+}
+
+
+
+function collectXMLdata(isbn){
+  var jsonString, datafieldObj;
+  parser = new xml2js.Parser({attrkey : 'oclc'});
+  parser.addListener('end', function(result) {
+        var subjectsObj=[];
+        jsonString = JSON.stringify(result);
+        var jsonObj = JSON.parse(jsonString);
+        datafieldObj = jsonObj.record.datafield;
+        var i=0;
+        countLoop++;
+        for (var key in datafieldObj) {
+
+           obj = datafieldObj[key];
+           for (prop in obj) {
+              //check that it's not an inherited property
+              if(obj.hasOwnProperty(prop)){
+                i++;
+                if (obj[prop]['tag']=='245'){
+                  getTitleAndAuthorInfo();
+                }
+                if (obj[prop]['tag']=='520'){
+                  getSummaryInfo();
+                }
+                if (obj[prop]['tag']=='650'){
+                    subjectsObj[i] = obj['subfield'];
+                }
+              }
+           }
+        }
+
+    getSubjectsInfo(subjectsObj);
+
+    if (debug) console.log('i is '+i+' length is '+isbnsToProcess.length + ' count is '+countLoop);
+
+    if (countLoop==isbnsToProcess.length){
+        finishFile(function(){
+          validateDataFile();
+        });
+    }
+    else{
+    logMsg(book.isbn + ' was process successfully.');
+      fs.appendFile(path+dataFile, JSON.stringify(book)+',\n', function (error) {
+        if (error) throw error;
+      });
+    }
+  });
+}
+
+
+
+
+function getSummaryInfo(){
+  var summaryArray=[];
+//  collectAray('520',summaryArray);
+  var summaryStr = obj['subfield'][0]['_'];
+  summaryStr = summaryStr.trim();
+  if (debug) console.log(summaryStr);
+  book['summary']=summaryStr;
+}
+
 
 function validateDataFile(){
   var data, tmpObj;
@@ -97,51 +163,6 @@ function loopThroughISBNfile(){
   }
 }
 
-
-function collectXMLdata(isbn){
-  var jsonString, datafieldObj;
-  parser = new xml2js.Parser({attrkey : 'oclc'});
-  parser.addListener('end', function(result) {
-        jsonString = JSON.stringify(result);
-        var jsonObj = JSON.parse(jsonString);
-        datafieldObj = jsonObj.record.datafield;
-        i=0;
-        countLoop++;
-        for (var key in datafieldObj) {
-
-           obj = datafieldObj[key];
-           for (prop in obj) {
-              //check that it's not an inherited property
-              if(obj.hasOwnProperty(prop)){
-                if (obj[prop]['tag']=='245'){
-                  getTitleAndAuthorInfo();
-                }
-                if (obj[prop]['tag']=='520'){
-                  getSummaryInfo();
-                }
-                if (obj[prop]['tag']=='650'){
-                  //getSubjectsInfo();
-                }
-              }
-           }
-        }
-
-    if (debug) console.log('i is '+i+' length is '+isbnsToProcess.length + ' count is '+countLoop);
-
-    if (countLoop==isbnsToProcess.length){
-        finishFile(function(){
-          validateDataFile();
-        });
-    }
-    else{
-    logMsg(book.isbn + ' was process successfully.');
-      fs.appendFile(path+dataFile, JSON.stringify(book)+',\n', function (error) {
-        if (error) throw error;
-      });
-    }
-  });
-}
-
 function finishFile(callback){
         fs.appendFile(path+dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
         if (error) throw error;
@@ -151,21 +172,6 @@ function finishFile(callback){
         console.log('Finished processing. Check '+logFile+' for details.');
       });
       setTimeout(function() { callback(); }, 100);
-}
-
-function getSubjectsInfo(){
-  var subjectsObj=obj['subfield'];
-  console.log(util.inspect(subjectsObj, showHidden=true, depth=8, colorize=true));
-}
-
-
-function getSummaryInfo(){
-  var summaryArray=[];
-//  collectAray('520',summaryArray);
-  var summaryStr = obj['subfield'][0]['_'];
-  summaryStr = summaryStr.trim();
-  if (debug) console.log(summaryStr);
-  book['summary']=summaryStr;
 }
 
 function getTitleAndAuthorInfo(){
