@@ -10,17 +10,17 @@ var moment = require('moment');// for date formatting
 // Variables
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var book = {};
-var debug2 = true;
 var debug = false;
+var debug2 = true; // for when working on a single function
 var isbnFile = 'isbns-sample.txt';
 var dataFile = './leisureBooksJSON.txt';
 var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
-var isbnsToProcess=[];
-var isbn='';
-var url= '';
-var obj, prop;
-var summaryMsg =''; // used between
-var countLoop=0;
+var isbnsToProcess=[]; // used for lfow control
+var isbn=''; // used between request and listener
+var url= ''; // used between request and listener
+var obj, prop; //used between data retrieval from OCLC json object
+var summaryMsg =''; // used between processISBNfile and finishFile
+var countLoop=0; // used to flag end of isbn array
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
 
@@ -55,11 +55,6 @@ function series() {
     }
     next();
 };
-
-
-//
-  
-
 
 
 /// MAIN PROCESSING SECTION
@@ -159,25 +154,7 @@ function finishFile(callback){
 
 function getSubjectsInfo(){
   var subjectsObj=obj['subfield'];
-
-console.log(util.inspect(subjectsObj, showHidden=true, depth=8, colorize=true));
-
-//  console.log('length '+subjectsObj.length);
-//  console.log(util.inspect(subjectsObj, showHidden=true, depth=6, colorize=true));
-//  var i=0;
-//  for (var key in subjectsObj) {
-//     var tmpObj = subjectsObj[key];
-//     for (var prop in tmpObj) {
-//        //check that it's not an inherited property
-//        if(tmpObj.hasOwnProperty(prop)){
-//          i++;
-//          //console.log(tmpObj[prop]);
-//        }
-//     }
-//  }
-
-
-
+  console.log(util.inspect(subjectsObj, showHidden=true, depth=8, colorize=true));
 }
 
 
