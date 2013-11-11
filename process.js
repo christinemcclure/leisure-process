@@ -127,17 +127,18 @@ function collectXMLdata(){
       fs.appendFile(dataFile, JSON.stringify(book)+'\n];\n', function (error) {
         if (error) throw error;
       });
-      logMsg(summaryMsg);
+      logMsg(book.isbn + ' was process successfully.');
       logMsg('Processing complete');
+      logMsg(summaryMsg);
       console.log('Finished processing. Check '+logFile+' for details.');
 
     }
     else{
+    logMsg(book.isbn + ' was process successfully.');
       fs.appendFile(dataFile, JSON.stringify(book)+',\n', function (error) {
         if (error) throw error;
       });
     }
-
   });
 }
 
@@ -200,8 +201,8 @@ function getTitleAndAuthorInfo(){
 function sendRequest(url, isbn, callback){
   request(url, function (error, response, xmlData) {
     if (!error && response.statusCode == 200) {
+      book = new Object;
       book['isbn']=isbn;
-      console.log('from send request '+book.isbn);
       collectXMLdata(isbn);
       jsonData = parser.parseString(xmlData);
     }
