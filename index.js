@@ -11,7 +11,7 @@ var moment = require('moment');// for date formatting
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var book = {};
 var debug = false;
-var debug2 = true; // for when working on a single function
+var debug2 = false; // for when working on a single function
 var path = './';
 var isbnFile = 'isbns-sample.txt';
 var dataFile = 'leisureBooksJSON.txt';
@@ -57,7 +57,6 @@ function series() {
     next();
 };
 
-
 /// MAIN PROCESSING SECTION
 
 series();
@@ -66,8 +65,37 @@ series();
 ////FUNCTIONS
 
 
-// Call the ShowResults callback function for each
-// array element.
+
+function init(callback){
+  fs.exists(logFile, function (exists) { // delete log file if run multiple times in one day
+    if (exists){
+      fs.unlink(logFile, function (error) {
+        if (error) throw error;
+        if (debug) console.log('successfully deleted log file before processing: ' + logFile);
+      });
+    }
+    logMsg('Processing started. Using Input file name: '+isbnFile);
+  });
+  fs.exists(path+dataFile, function (exists) { // delete data output file if exists
+    if (exists){
+      fs.unlink(path+dataFile, function (error) {
+        if (error) throw error;
+      });
+    }
+    fs.appendFile(path+dataFile, '{"leisureBooks":[\n', function (error) { // start of JSON object
+      if (error) throw error;
+    });
+  });
+  console.log(moment().format('YYYY-MM-DD HH:MM') + // output to console
+    '\nProcessing started.'+
+    '\n  Input file: \"' + isbnFile +
+    '\"\n  Log file: \"' + logFile +
+    '\"\n  JSON file created: \"' +dataFile + '\"');
+  setTimeout(function() { callback(); }, 100);
+
+}
+
+
 
 function getSubjectsInfo(obj){
   var j=0;
@@ -84,40 +112,29 @@ function getSubjectsInfo(obj){
   }
   if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true)+'\n***\n');
 
-
-//var tmp2=[];
-//// tmp[1][0].length number of items to get
- tmp2=tmp[3][1]['_']; // isolated string
-////tmp2=tmp[1][0];
-//  if (debug2) console.log(tmp[3][1]['_']);
-  if (debug2) console.log(typeof tmp2 + ' *** ' + tmp[3].length);
   var subjArr={};
   for (var key in tmp) {
-      if (tmp.hasOwnProperty(key)) {
-        subjArr[key]=[];
+      if (tmp.hasOwnProperty(key)) {// ignore parent elements
+        subjArr[key]=[]; // create array
         var length = tmp[key].length;
-        console.log (util.inspect([key])+ ' has a length of '+length);
-          for (var key2 in tmp[key]){
+        if (debug2) console.log (util.inspect([key])+ ' has a length of '+length);
+          for (var key2 in tmp[key]){// cycle through sub-objects
             if (tmp.hasOwnProperty(key)){
               subjArr[key][key2]=[];
-              console.log('type is '+ typeof tmp[key][key2]['_'] + '  '+ tmp[key][key2]['_']);
+              if (debug2) console.log('type is '+ typeof tmp[key][key2]['_'] + '  '+ tmp[key][key2]['_']);
               if (typeof tmp[key][key2]['_']=='string'){
                 subjArr[key][key2]=tmp[key][key2]['_'];
               }
             }
           }
-          
       }
   }
-
-  console.log('array is \n\n');
-console.log(util.inspect(subjArr));
-
+  if (debug) console.log(util.inspect(subjArr));
+  book['subjects']=subjArr;
 }
 
 function getSummaryInfo(){
   var summaryArray=[];
-//  collectAray('520',summaryArray);
   var summaryStr = obj['subfield'][0]['_'];
   summaryStr = summaryStr.trim();
   if (debug) console.log(summaryStr);
@@ -194,7 +211,7 @@ function validateDataFile(){
 
     try{
      tmpObj=JSON.parse(data);
-     logMsg(path+dataFile + ' has been verified as valid JSON.')
+     logMsg(dataFile + ' has been verified as a valid JSON object.')
     }
     catch(e){
      console.log('An error has occurred: '+e.message)
@@ -273,35 +290,6 @@ function createURL(isbn){
   return url;
 }
 
-
-function init(callback){
-  fs.exists(logFile, function (exists) {
-    if (exists){
-      fs.unlink(logFile, function (error) {
-        if (error) throw error;
-        if (debug) console.log('successfully deleted log file before processing: ' + logFile);
-      });
-    }
-    logMsg('Processing started. Using Input file name: '+isbnFile);
-  });
-  fs.exists(path+dataFile, function (exists) {
-    if (exists){
-      fs.unlink(path+dataFile, function (error) {
-        if (error) throw error;
-      });
-    }
-    fs.appendFile(path+dataFile, '{"leisureBooks":[\n', function (error) {
-      if (error) throw error;
-    });
-  });
-  console.log(moment().format('YYYY-MM-DD HH:MM') + 
-    '\nProcessing started.'+
-    '\n  Input file: \"' + isbnFile +
-    '\"\n  Log file: \"' + logFile +
-    '\"\n  JSON file created: \"' +dataFile + '\"');
-  setTimeout(function() { callback(); }, 100);
-
-}
 
 
 function processISBNFile(callback){

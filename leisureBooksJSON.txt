@@ -1,4 +1,1 @@
 {"leisureBooks":[
-{"isbn":"9780307886521","title":"Pinched : how the Great Recession has narrowed our futures and what we can do about it","author":"Don Peck","summary":"Presents cautionary predictions about American life in the aftermath of the recession that describes long-term consequences being faced by Americans from every walk of life."}
-]
-}
