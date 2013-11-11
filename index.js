@@ -78,11 +78,35 @@ function getSubjectsInfo(obj){
         tmp[j]=obj[i];
       }
   }
-  var tmp2=tmp[1];
-
   if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true)+'\n***\n');
+
+var tmp2=[];
+
+        for (var key in tmp) {
+          i=0;
+           var obj = tmp[key];
+           for (var prop in obj) {
+              //check that it's not an inherited property
+              if(obj.hasOwnProperty(prop)){
+                i++;
+                console.log(' '+'obj = '+obj + ' key = '+key +' prop = '+prop)
+                
+              }
+           }
+        }
+tmp2=tmp[1][0]['_'];
   if (debug2) console.log(util.inspect(tmp2, showHidden=true, depth=6, colorize=true));
+
   if (debug2) console.log(typeof tmp + ' ' + typeof tmp2);
+}
+
+function getSummaryInfo(){
+  var summaryArray=[];
+//  collectAray('520',summaryArray);
+  var summaryStr = obj['subfield'][0]['_'];
+  summaryStr = summaryStr.trim();
+  if (debug) console.log(summaryStr);
+  book['summary']=summaryStr;
 }
 
 
