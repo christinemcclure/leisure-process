@@ -18,8 +18,8 @@ var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
 var isbnsToProcess=[];
 var isbn='';
 var url= '';
-var datafieldObj, obj, prop;
-var summaryMsg ='';
+var obj, prop;
+var summaryMsg =''; // used between
 var countLoop=0;
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
