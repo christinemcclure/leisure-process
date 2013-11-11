@@ -8,17 +8,16 @@ var moment = require('moment');// for date formatting
   moment().format();
 
 // Variables
+var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var book = {};
 var debug2 = true;
 var debug = false;
-var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
-var isbn='';
 var isbnFile = 'isbns-sample.txt';
 var dataFile = './leisureBooksJSON.txt';
+var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
 var isbnsToProcess=[];
-var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
+var isbn='';
 var url= '';
-var jsonData = '';
 var jsonString = "";
 var jsonObj, testStr;
 var datafieldObj, obj, prop;
@@ -27,9 +26,9 @@ var summaryMsg ='';
 var countLoop=0;
 var count=0;
 
-
-
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
+
+// controlled order of processing
 function series() {
     var callbackSeries =  
       [
