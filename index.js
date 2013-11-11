@@ -91,20 +91,27 @@ function getSubjectsInfo(obj){
 ////tmp2=tmp[1][0];
 //  if (debug2) console.log(tmp[3][1]['_']);
   if (debug2) console.log(typeof tmp2 + ' *** ' + tmp[3].length);
-
+  var subjArr={};
   for (var key in tmp) {
       if (tmp.hasOwnProperty(key)) {
+        subjArr[key]=[];
         var length = tmp[key].length;
         console.log (util.inspect([key])+ ' has a length of '+length);
           for (var key2 in tmp[key]){
             if (tmp.hasOwnProperty(key)){
-              console.log(tmp[key][key2]['_']);
+              subjArr[key][key2]=[];
+              console.log('type is '+ typeof tmp[key][key2]['_'] + '  '+ tmp[key][key2]['_']);
+              if (typeof tmp[key][key2]['_']=='string'){
+                subjArr[key][key2]=tmp[key][key2]['_'];
+              }
             }
           }
           
       }
   }
 
+  console.log('array is \n\n');
+console.log(util.inspect(subjArr));
 
 }
 
