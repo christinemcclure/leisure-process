@@ -12,9 +12,10 @@ var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var book = {};
 var debug = false;
 var debug2 = true; // for when working on a single function
+var path = './';
 var isbnFile = 'isbns-sample.txt';
-var dataFile = './leisureBooksJSON.txt';
-var logFile = './'+moment().format("YYYY-MM-DD")+'.log';
+var dataFile = 'leisureBooksJSON.txt';
+var logFile = moment().format("YYYY-MM-DD")+'.log';
 var isbnsToProcess=[]; // used for lfow control
 var isbn=''; // used between request and listener
 var url= ''; // used between request and listener
@@ -67,12 +68,12 @@ series();
 
 function validateDataFile(){
   var data, tmpObj;
-  fs.readFile(dataFile, 'utf-8',function (err, data) {
+  fs.readFile(path+dataFile, 'utf-8',function (err, data) {
     if (err) throw err;
 
     try{
      tmpObj=JSON.parse(data);
-     logMsg(dataFile + ' has been verified as valid JSON.')
+     logMsg(path+dataFile + ' has been verified as valid JSON.')
     }
     catch(e){
      console.log('An error has occurred: '+e.message)
@@ -134,7 +135,7 @@ function collectXMLdata(isbn){
     }
     else{
     logMsg(book.isbn + ' was process successfully.');
-      fs.appendFile(dataFile, JSON.stringify(book)+',\n', function (error) {
+      fs.appendFile(path+dataFile, JSON.stringify(book)+',\n', function (error) {
         if (error) throw error;
       });
     }
@@ -142,7 +143,7 @@ function collectXMLdata(isbn){
 }
 
 function finishFile(callback){
-        fs.appendFile(dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
+        fs.appendFile(path+dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
         if (error) throw error;
         logMsg(book.isbn + ' was process successfully.');
         logMsg('Processing complete');
@@ -222,13 +223,13 @@ function init(callback){
     }
     logMsg('Processing started. Using Input file name: '+isbnFile);
   });
-  fs.exists(dataFile, function (exists) {
+  fs.exists(path+dataFile, function (exists) {
     if (exists){
-      fs.unlink(dataFile, function (error) {
+      fs.unlink(path+dataFile, function (error) {
         if (error) throw error;
       });
     }
-    fs.appendFile(dataFile, '{"leisureBooks":[\n', function (error) {
+    fs.appendFile(path+dataFile, '{"leisureBooks":[\n', function (error) {
       if (error) throw error;
     });
   });
@@ -239,7 +240,7 @@ function init(callback){
 
 
 function processISBNFile(callback){
-    fs.readFile(isbnFile, 'utf8', function(error, fileData) {
+    fs.readFile(path+isbnFile, 'utf8', function(error, fileData) {
       // the data is passed to the callback in the second argument
       if(error){
         throw error;
