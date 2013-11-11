@@ -21,7 +21,6 @@ var url= '';
 var datafieldObj, obj, prop;
 var summaryMsg ='';
 var countLoop=0;
-var count=0;
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
 
