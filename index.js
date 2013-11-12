@@ -1,3 +1,8 @@
+//  Description:
+//  Process a text file of ISBN and retrieve bibliographic information from the OCLC WorldCat Search API,
+//  which only returns results into XML. Convert into JSON and create a simplified JSON object of
+//  ISBN, title, author, summary, and an array of subjects.
+
 // Modules
 var fs = require('fs'),
   xml2js = require('xml2js');
@@ -12,7 +17,7 @@ var sleep = require('sleep');
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var book = {};
 var debug = false;
-var debug2 = true; // for when working on a single function
+var debug2 = false; // for when working on a single function
 var path = './';
 var isbnFile = 'isbns-sample.txt';
 var dataFile = 'leisureBooksJSON.txt';
@@ -25,9 +30,9 @@ var summaryMsg =''; // used between processISBNfile and finishFile
 var countLoop=0; // used to flag end of isbn array
 var alertMsg='';
 
-// From http://blog.4psa.com/the-callback-syndrome-in-node-js/
 
 // controlled order of processing
+// From http://blog.4psa.com/the-callback-syndrome-in-node-js/
 function series() {
     var callbackSeries =  
       [
@@ -67,7 +72,7 @@ series();
 ////FUNCTIONS
 
 
-
+// Creates log and data files. Print file information to the console
 function init(callback){
   fs.exists(logFile, function (exists) { // delete log file if run multiple times in one day
     if (exists){
@@ -97,7 +102,7 @@ function init(callback){
 
 }
 
-
+// Process ISBN file. Create an array of valid ISBNs to send to API
 function processISBNFile(callback){
     fs.readFile(path+isbnFile, 'utf8', function(error, fileData) { // cycle through input file
       // the data is passed to the callback in the second argument
@@ -133,75 +138,14 @@ function processISBNFile(callback){
   setTimeout(function() { callback(); }, 100); // set callback for ordered processing
  }
 
-function getAndProcessData(callback){
-  loopThroughISBNfile(); // need a callback so logging is in order
-  setTimeout(function() { callback(); }, 100);
-}
-
-
-function loopThroughISBNfile(){
-  for (var i=0; i<isbnsToProcess.length; i++){
-    isbn=isbnsToProcess[i];
-    var url = createURL(isbn);
-    sleep.sleep(1);// see if this solves api problem
-    sendRequest(url, isbn, function(){
-    });
-  }
-}
-
-
-function getSubjectsInfo(obj){
-  var j=0;
-  var tmp={};
-  var subArr=[];
-  for (var i=0; i<obj.length; i++){
-      if (typeof obj[i]==['undefined']){// remove blank elements from the array of ojbjects
-        continue;
-      }
-      else{
-        j++;
-        tmp[j]=obj[i];
-      }
-  }
-  if (debug) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true)+'\n***\n');
-
-  var subjArr={};
-  for (var key in tmp) {
-      if (tmp.hasOwnProperty(key)) {// ignore parent elements
-        subjArr[key]=[]; // create array
-        var length = tmp[key].length;
-        if (debug) console.log (util.inspect([key])+ ' has a length of '+length);
-          for (var key2 in tmp[key]){// cycle through sub-objects
-            if (tmp.hasOwnProperty(key)){
-              subjArr[key][key2]=[];
-              if (debug) console.log('type is '+ typeof tmp[key][key2]['_'] + '  '+ tmp[key][key2]['_']);
-              if (typeof tmp[key][key2]['_']=='string'){
-                subjArr[key][key2]=tmp[key][key2]['_'];
-              }
-            }
-          }
-      }
-  }
-  if (debug) console.log(util.inspect(subjArr));
-  book['subjects']=subjArr;
-}
-
-function getSummaryInfo(){
-  var summaryArray=[];
-  var summaryStr = obj['subfield'][0]['_'];
-  summaryStr = summaryStr.trim();
-  if (debug) console.log(summaryStr);
-  book['summary']=summaryStr;
-}
-
-
+// When data received, validate and extract data
 function collectXMLdata(isbn){
   var jsonString, datafieldObj;
   parser = new xml2js.Parser({attrkey : 'oclc'});
   parser.addListener('end', function(result) {
     jsonString = JSON.stringify(result);
     if (checkResult(jsonString)==0){
-        var subjectsObj=[];      
+        var subjectsObj=[];
         var testForJSON = new RegExp(/^\{/);
         var testForScripts = new RegExp(/\<script/);
         var good = testForJSON.test(jsonString);
@@ -251,22 +195,75 @@ function collectXMLdata(isbn){
      logMsg(alertMsg);
    }
   }); // end parser listener
-  
+
+}
+
+// Function for flow control
+function getAndProcessData(callback){
+  loopThroughISBNfile(); // need a callback so logging is in order
+  setTimeout(function() { callback(); }, 100);
 }
 
 
+// Send an API request for each valid ISBN
+// Using sleep here in case there is throttling at OCLC
+function loopThroughISBNfile(){
+  for (var i=0; i<isbnsToProcess.length; i++){
+    isbn=isbnsToProcess[i];
+    var url = createURL(isbn);
+    sleep.sleep(1);// see if this solves api problem
+    sendRequest(url, isbn, function(){
+    });
+  }
+}
 
+// Subjects are objects within objects, build a simple array
+function getSubjectsInfo(obj){
+  var j=0;
+  var tmp={};
+  var subArr=[];
+  for (var i=0; i<obj.length; i++){
+      if (typeof obj[i]==['undefined']){// remove blank elements from the array of ojbjects
+        continue;
+      }
+      else{
+        j++;
+        tmp[j]=obj[i];
+      }
+  }
+  if (debug) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true)+'\n***\n');
 
+  var subjArr={};
+  for (var key in tmp) {
+      if (tmp.hasOwnProperty(key)) {// ignore parent elements
+        subjArr[key]=[]; // create array
+        var length = tmp[key].length;
+        if (debug) console.log (util.inspect([key])+ ' has a length of '+length);
+          for (var key2 in tmp[key]){// cycle through sub-objects
+            if (tmp.hasOwnProperty(key)){
+              subjArr[key][key2]=[];
+              if (debug) console.log('type is '+ typeof tmp[key][key2]['_'] + '  '+ tmp[key][key2]['_']);
+              if (typeof tmp[key][key2]['_']=='string'){
+                subjArr[key][key2]=tmp[key][key2]['_'];
+              }
+            }
+          }
+      }
+  }
+  if (debug) console.log(util.inspect(subjArr));
+  book['subjects']=subjArr;
+}
+
+// Get summary info from the 520 field
 function getSummaryInfo(){
   var summaryArray=[];
-//  collectAray('520',summaryArray);
   var summaryStr = obj['subfield'][0]['_'];
   summaryStr = summaryStr.trim();
   if (debug) console.log(summaryStr);
   book['summary']=summaryStr;
 }
 
-
+// Make sure ending JSON file is valid
 function validateDataFile(){
   var data, tmpObj;
   fs.readFile(path+dataFile, 'utf-8',function (err, data) {
@@ -283,7 +280,7 @@ function validateDataFile(){
 }
 
 
-
+// Write a message to the log file for each ISBN
 function finishFile(callback){
         fs.appendFile(path+dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
         if (error) throw error;
@@ -295,6 +292,7 @@ function finishFile(callback){
       setTimeout(function() { callback(); }, 100);
 }
 
+// Simple checks for JSON object and no <script tags
 function checkResult(data){
   var testForJSON = new RegExp(/^\{/);
   var testForScripts = new RegExp(/\<script/);
@@ -311,6 +309,7 @@ function checkResult(data){
   return 0;
 }
 
+// Get title and author from 245 field
 function getTitleAndAuthorInfo(){
   var titleArray=[];
 //  collectAray('245',titleArray);
@@ -333,7 +332,8 @@ function getTitleAndAuthorInfo(){
   
 }
 
-
+//Collect isbn from response because we want to be sure to use IIT's isbn for the
+// search, not a different one
 function sendRequest(url, isbn, callback){
   request(url, function (error, response, xmlData) {
     if (!error && response.statusCode == 200) {
@@ -346,7 +346,7 @@ function sendRequest(url, isbn, callback){
   callback(isbn);
 }
 
-
+// create API path
 function createURL(isbn){
   url = 'http://www.worldcat.org/webservices/catalog/content/isbn/' + isbn + '?wskey='+key;
   // use oaiauth later
@@ -356,7 +356,7 @@ function createURL(isbn){
 }
 
 
-
+// write a message to the log file with a timestamp
 function logMsg(msg){
   var moment = require('moment');
   moment().format();
@@ -366,8 +366,8 @@ function logMsg(msg){
   });
 }
 
+// not full checksum processing, just ensuring that the split worked correctly
 function checkISBN(isbn) {
-// not a true validation, just ensuring that the split worked correctly
   var exp, ret;
   if  (isbn.length === 10) {
     exp = new RegExp(/\b(^\d{10}$|^\d{9}x)$\b/i); // ISBN-10 can be 10 digits, or 9 digits + x (checksum of 10)
@@ -386,6 +386,7 @@ function checkISBN(isbn) {
     return ret;
 }
 
+// don't add duplicate ISBNs to the array
 function checkIfInArray(arr, item){
   var flag = false;
   for (var i = 0; i < arr.length; i++){
