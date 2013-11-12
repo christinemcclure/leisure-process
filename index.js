@@ -6,6 +6,7 @@ var request = require('request');
 var parser = {};
 var moment = require('moment');// for date formatting
   moment().format();
+var sleep = require('sleep');  
 
 // Variables
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
@@ -141,6 +142,7 @@ function loopThroughISBNfile(){
   for (var i=0; i<isbnsToProcess.length; i++){
     isbn=isbnsToProcess[i];
     var url = createURL(isbn);
+    sleep.sleep(1);// see if this solves api problem
     sendRequest(url, isbn, function(){
     });
   }
@@ -197,6 +199,7 @@ function collectXMLdata(isbn){
   var jsonString, datafieldObj;
   parser = new xml2js.Parser({attrkey : 'oclc'});
   parser.addListener('end', function(result) {
+        logMsg('End msg found');
         var subjectsObj=[];
         jsonString = JSON.stringify(result);
         var jsonObj = JSON.parse(jsonString);
