@@ -12,12 +12,12 @@
 - [x] Split into array by space
 - [x] Ensure alpha-numeric only (hyphens are added in display logic)
 - [x] Check if ISBN is in processed array (skip duplicates)
-- [ ] Get OCLC record from WorldCat Search API by ISBN
-- [ ] Check for bad data
-- [ ] Convert to JSON
-- [ ] Write to file
-- [ ] Add ISBN to processed array
-- [ ] Get next line
+- [x] Get OCLC record from WorldCat Search API by ISBN
+- [x] Check for bad data
+- [x] Convert to JSON
+- [x] Write to file
+- [ ] Add ISBN to processed array -- not needed
+- [x] Get next line
 
 
 # ISBN  examples
