@@ -233,7 +233,7 @@ function collectXMLdata(isbn){
         });
     }
     else{
-    logMsg(book.isbn + ' was process successfully.');
+    logMsg(book.isbn + ' was processed successfully.');
       fs.appendFile(path+dataFile, JSON.stringify(book)+',\n', function (error) {
         if (error) throw error;
       });
@@ -274,7 +274,7 @@ function validateDataFile(){
 function finishFile(callback){
         fs.appendFile(path+dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
         if (error) throw error;
-        logMsg(book.isbn + ' was process successfully.');
+        logMsg(book.isbn + ' was processed successfully.');
         logMsg('Processing complete');
         logMsg(summaryMsg);
         console.log('Finished processing. Check '+logFile+' for details.');
