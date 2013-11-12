@@ -125,7 +125,7 @@ function processISBNFile(callback){
           badISBNs += 1;
         }
       }
-        summaryMsg ='There were '+isbns.length+' lines in the file. '+ isbnsToProcess.length+' were processed to collect bibliographic data. '+badISBNs +' did not contain a valid ISBN, and ' + dupeISBNs +' were duplicates.';
+        summaryMsg ='There were '+isbns.length+' lines in the file. '+ isbnsToProcess.length+' were sent to the API to collect bibliographic data. '+badISBNs +' did not contain a valid ISBN, and ' + dupeISBNs +' were duplicates.';
 
     });
   setTimeout(function() { callback(); }, 100); // set callback for ordered processing
