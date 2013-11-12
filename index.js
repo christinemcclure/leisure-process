@@ -12,7 +12,7 @@ var sleep = require('sleep');
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var book = {};
 var debug = false;
-var debug2 = false; // for when working on a single function
+var debug2 = true; // for when working on a single function
 var path = './';
 var isbnFile = 'isbns-sample.txt';
 var dataFile = 'leisureBooksJSON.txt';
@@ -23,6 +23,7 @@ var url= ''; // used between request and listener
 var obj, prop; //used between data retrieval from OCLC json object
 var summaryMsg =''; // used between processISBNfile and finishFile
 var countLoop=0; // used to flag end of isbn array
+var alertMsg='';
 
 // From http://blog.4psa.com/the-callback-syndrome-in-node-js/
 
@@ -162,18 +163,18 @@ function getSubjectsInfo(obj){
         tmp[j]=obj[i];
       }
   }
-  if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true)+'\n***\n');
+  if (debug) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true)+'\n***\n');
 
   var subjArr={};
   for (var key in tmp) {
       if (tmp.hasOwnProperty(key)) {// ignore parent elements
         subjArr[key]=[]; // create array
         var length = tmp[key].length;
-        if (debug2) console.log (util.inspect([key])+ ' has a length of '+length);
+        if (debug) console.log (util.inspect([key])+ ' has a length of '+length);
           for (var key2 in tmp[key]){// cycle through sub-objects
             if (tmp.hasOwnProperty(key)){
               subjArr[key][key2]=[];
-              if (debug2) console.log('type is '+ typeof tmp[key][key2]['_'] + '  '+ tmp[key][key2]['_']);
+              if (debug) console.log('type is '+ typeof tmp[key][key2]['_'] + '  '+ tmp[key][key2]['_']);
               if (typeof tmp[key][key2]['_']=='string'){
                 subjArr[key][key2]=tmp[key][key2]['_'];
               }
@@ -194,14 +195,18 @@ function getSummaryInfo(){
 }
 
 
-
 function collectXMLdata(isbn){
   var jsonString, datafieldObj;
   parser = new xml2js.Parser({attrkey : 'oclc'});
   parser.addListener('end', function(result) {
-        logMsg('End msg found');
-        var subjectsObj=[];
-        jsonString = JSON.stringify(result);
+    jsonString = JSON.stringify(result);
+    if (checkResult(jsonString)==0){
+        var subjectsObj=[];      
+        var testForJSON = new RegExp(/^\{/);
+        var testForScripts = new RegExp(/\<script/);
+        var good = testForJSON.test(jsonString);
+        var bad = testForScripts.test(jsonString);
+        if (debug)console.log(jsonString+'\n\ngood/bad '+good+' '+bad);
         var jsonObj = JSON.parse(jsonString);
         datafieldObj = jsonObj.record.datafield;
         var i=0;
@@ -241,7 +246,12 @@ function collectXMLdata(isbn){
         if (error) throw error;
       });
     }
-  });
+   }// end check result
+   else {
+     logMsg(alertMsg);
+   }
+  }); // end parser listener
+  
 }
 
 
@@ -283,6 +293,22 @@ function finishFile(callback){
         console.log('Finished processing. Check '+logFile+' for details.');
       });
       setTimeout(function() { callback(); }, 100);
+}
+
+function checkResult(data){
+  var testForJSON = new RegExp(/^\{/);
+  var testForScripts = new RegExp(/\<script/);
+  var good = testForJSON.test(data);
+  var bad = testForScripts.test(data);
+  if (bad==true){
+    alertMsg='WARNING -- script tag found in response for ISBN '+isbn;
+    return -1;
+  }
+  if (good==false){
+    alertMsg='WARNING -- JSON not returned from xml2json Module for ISBN '+isbn;
+    return -1;
+  }
+  return 0;
 }
 
 function getTitleAndAuthorInfo(){

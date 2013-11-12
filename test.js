@@ -1,29 +1,24 @@
 var fs = require('fs');
 var util = require('util'); // to inspect objects
 
-
-
-var test={};
-test[0]=[];
-test[1]=[];
-test[0][0]='aaa';
-test[0][1]='bbb';
-test[1][0]='ccc';
-
-
-// Define the callback function.
-function ShowResults(value, index, ar) {
-    console.log(" index: " + index + " value: " + value);
+var str = "<!DOCTYPE html>httpversisdf skad<script text=jf l;skd<est=j fsdklj";
+isbn='9999999';
+var alertMsg=''
+function checkResult(data){
+  var testForXML = new RegExp(/^\<\?xml/);
+  var testForScripts = new RegExp(/\<script/);
+  var good = testForXML.test(data);
+  var bad = testForScripts.test(data);
+  if (bad===true){
+    alertMsg='WARNING -- script tag found in response for ISBN '+isbn;
+    return -1;
+  }
+  if (good===false){
+    alertMsg='WARNING -- xml not returned for ISBN '+isbn;
+    return -1;
+  }
+  return 0;
 }
 
-// Create an array.
-var letters = ['ab', 'cd', 'ef'];
-
-// Call the ShowResults callback function for each
-// array element.
-letters.forEach(ShowResults);
-
-// Output:
-//  value: ab index: 0
-//  value: cd index: 1
-//  value: ef index: 2 
+checkResult(str);
+console.log(alertMsg);
