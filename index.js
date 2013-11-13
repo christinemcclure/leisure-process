@@ -11,7 +11,6 @@ var request = require('request');
 var parser = {};
 var moment = require('moment');// for date formatting
   moment().format();
-var sleep = require('sleep');  
 
 // Variables
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
@@ -206,12 +205,10 @@ function getAndProcessData(callback){
 
 
 // Send an API request for each valid ISBN
-// Using sleep here in case there is throttling at OCLC
 function loopThroughISBNfile(){
   for (var i=0; i<isbnsToProcess.length; i++){
     isbn=isbnsToProcess[i];
     var url = createURL(isbn);
-    sleep.sleep(1);// see if this solves api problem
     sendRequest(url, isbn, function(){
     });
   }
