@@ -177,7 +177,7 @@ function collectXMLdata(isbn){
 
     getSubjectsInfo(subjectsObj);
 
-    if (debug) console.log('i is '+i+' length is '+isbnsToProcess.length + ' count is '+countLoop);
+    if (debug) console.log('length is '+isbnsToProcess.length + ' count is '+countLoop);
 
     if (countLoop==isbnsToProcess.length){
         finishFile(function(){
