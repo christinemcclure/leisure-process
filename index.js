@@ -88,7 +88,7 @@ function init(callback){
         if (error) throw error;
       });
     }
-    fs.appendFile(path+dataFile, '{"leisureBooks":[\n', function (error) { // start of JSON object
+    fs.appendFile(path+dataFile, '{"leisureBooks":[\r\n', function (error) { // start of JSON object
       if (error) throw error;
     });
   });
@@ -185,7 +185,7 @@ function collectXMLdata(isbn){
     }
     else{
     logMsg(book.isbn + ' was processed successfully.');
-      fs.appendFile(path+dataFile, JSON.stringify(book)+',\n', function (error) {
+      fs.appendFile(path+dataFile, '  '+JSON.stringify(book)+',\r\n', function (error) {
         if (error) throw error;
       });
     }
@@ -279,7 +279,7 @@ function validateDataFile(){
 
 // Write a message to the log file for each ISBN
 function finishFile(callback){
-        fs.appendFile(path+dataFile, JSON.stringify(book)+'\n]\n}', function (error) {
+        fs.appendFile(path+dataFile, '  '+JSON.stringify(book)+'\r\n]\r\n}', function (error) {
         if (error) throw error;
         logMsg(book.isbn + ' was processed successfully.');
         logMsg('Processing complete');
