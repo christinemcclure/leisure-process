@@ -358,7 +358,7 @@ function logMsg(msg){
   var moment = require('moment');
   moment().format();
   var now = moment().format('YYYY-MM-DD HH:mm:ss');
-  fs.appendFile(logFile, now + ' ' + msg + '\n', function (error) {
+  fs.appendFile(logFile, now + ' ' + msg + '\r\n', function (error) {
     if (error) throw error;
   });
 }
