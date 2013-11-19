@@ -16,9 +16,9 @@ var moment = require('moment');// for date formatting
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var book = {};
 var debug = false;
-var debug2 = false; // for when working on a single function
+var debug2 = true; // for when working on a single function
 var path = './';
-var isbnFile = 'isbns-mid.txt';
+var isbnFile = 'isbns-full.txt';
 var dataFile = 'leisureBooksJSON.txt';
 var logFile = moment().format("YYYY-MM-DD")+'.log';
 var isbnsToProcess=[]; // used for lfow control
@@ -162,6 +162,7 @@ function collectXMLdata(isbn){
               if(obj.hasOwnProperty(prop)){
                 i++;
                 if (obj[prop]['tag']=='245'){
+                  if (debug)console.log(isbn + '  ' +obj[prop]);
                   getTitleAndAuthorInfo();
                 }
                 if (obj[prop]['tag']=='520'){
@@ -309,22 +310,31 @@ function checkResult(data){
 // Get title and author from 245 field
 function getTitleAndAuthorInfo(){
   var titleArray=[];
-//  collectAray('245',titleArray);
+  var authorStr=''; //author might be blank, so declare here
   var typeA=obj['subfield'];
+
   if (typeA.length == 3){
     var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];// get title and subtitle
-    var authorStr = obj['subfield'][2]['_'];//
+    authorStr = obj['subfield'][2]['_'];//
+  }
+  else if (typeA.length == 2){
+    var titleStr = obj['subfield'][0]['_'];// otherwise only title and author
+    authorStr = obj['subfield'][1]['_'];
   }
   else {
     var titleStr = obj['subfield'][0]['_'];// otherwise only title
-    var authorStr = obj['subfield'][1]['_'];
   }
+  
   var exp = new RegExp(/ \/$/); // strip training ' /' from title
   titleStr = titleStr.replace(exp,'');
-  exp = new RegExp(/.$/);
-  authorStr = authorStr.replace(exp,'');
+  if (debug2) console.log('Bef '+authorStr);
+  if (authorStr != ''){
+    exp = new RegExp(/\.$/);
+    authorStr = authorStr.replace(exp,'');
+    if (debug2) console.log('Fft '+authorStr);
+    book['author']=authorStr;
+  }
   book['title']=titleStr;
-  book['author']=authorStr;
   if (debug) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
   
 }
