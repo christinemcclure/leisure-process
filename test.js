@@ -1,24 +1,53 @@
 var fs = require('fs');
 var util = require('util'); // to inspect objects
 
-var str = "<!DOCTYPE html>httpversisdf skad<script text=jf l;skd<est=j fsdklj";
-isbn='9999999';
-var alertMsg=''
-function checkResult(data){
-  var testForXML = new RegExp(/^\<\?xml/);
-  var testForScripts = new RegExp(/\<script/);
-  var good = testForXML.test(data);
-  var bad = testForScripts.test(data);
-  if (bad===true){
-    alertMsg='WARNING -- script tag found in response for ISBN '+isbn;
-    return -1;
-  }
-  if (good===false){
-    alertMsg='WARNING -- xml not returned for ISBN '+isbn;
-    return -1;
-  }
-  return 0;
-}
 
-checkResult(str);
-console.log(alertMsg);
+// execute callbacks in parallel
+
+// executes the callbacks one after another
+function series() {
+    var callbackSeries = [async1, async2, 
+                          async3, async4];
+ 
+    function next() {
+        var callback = callbackSeries.shift();
+        if (callback) {
+            callback(next);
+        }
+        else {
+            finish();
+        }
+    }
+    next();
+};
+ 
+// run the example
+series();
+
+ 
+// prints text and waits one second
+function async1(callback) {
+    console.log('async1');
+    setTimeout(function() { callback(); }, 2000);
+}
+ 
+// prints text and waits half a second
+function async2(callback) {
+    console.log('async2');
+    setTimeout(function() { callback(); }, 500);
+}
+ 
+// prints text and waits two seconds
+function async3(callback) {
+    console.log('async3');
+    setTimeout(function() { callback(); }, 500);
+}
+ 
+// prints text and waits a second and a half
+function async4(callback) {
+    console.log('async4:');
+    setTimeout(function() { callback(); }, 500);
+}
+ 
+// prints text
+function finish() { console.log('Finished.'); }
