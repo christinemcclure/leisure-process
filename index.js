@@ -327,11 +327,9 @@ function getTitleAndAuthorInfo(){
   
   var exp = new RegExp(/ \/$/); // strip training ' /' from title
   titleStr = titleStr.replace(exp,'');
-  if (debug2) console.log('Bef '+authorStr);
-  if (authorStr != ''){
+  if (authorStr != ''){ // replace trailing period if there is an author
     exp = new RegExp(/\.$/);
     authorStr = authorStr.replace(exp,'');
-    if (debug2) console.log('Fft '+authorStr);
     book['author']=authorStr;
   }
   book['title']=titleStr;
