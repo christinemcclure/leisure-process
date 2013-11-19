@@ -332,7 +332,7 @@ function getTitleAndAuthorInfo(){
 //Collect isbn from response because we want to be sure to use IIT's isbn for the
 // search, not a different one
 function sendRequest(url, isbn, callback){
-  request(url, function (error, response, xmlData) {
+  request(url, 5000, function (error, response, xmlData) {
     if (!error && response.statusCode == 200) {
       book = new Object;
       book['isbn']=isbn;
