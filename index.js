@@ -312,6 +312,8 @@ function getTitleAndAuthorInfo(){
   var titleArray=[];
   var authorStr=''; //author might be blank, so declare here
   var typeA=obj['subfield'];
+  if (debug2) console.log(util.inspect(typeA, showHidden=true, depth=6, colorize=true));
+
 
   if (typeA.length == 3){
     var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];// get title and subtitle
