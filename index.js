@@ -164,7 +164,7 @@ function collectXMLdata(isbn){
                 i++;
                 if (obj[prop]['tag']=='245'){
                   if (debug)console.log(isbn + '  ' +obj[prop]);
-                  getTitleAndAuthorInfo();
+                  getTitleInfo();
                 }
                 if (obj[prop]['tag']=='520'){
                   getSummaryInfo();
@@ -309,9 +309,8 @@ function checkResult(data){
 }
 
 // Get title and author from 245 field
-function getTitleAndAuthorInfo(){
+function getTitleInfo(){
   var titleArray=[];
-  var authorStr=''; //author might be blank, so declare here
   var typeA=obj['subfield'];
   var tmp = obj['subfield'][0][parserPrefix]['code'];
   if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true));
@@ -319,11 +318,9 @@ function getTitleAndAuthorInfo(){
 
   if (typeA.length == 3){
     var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];// get title and subtitle
-    authorStr = obj['subfield'][2]['_'];//
   }
   else if (typeA.length == 2){
     var titleStr = obj['subfield'][0]['_'];// otherwise only title and author
-    authorStr = obj['subfield'][1]['_'];
   }
   else {
     var titleStr = obj['subfield'][0]['_'];// otherwise only title
@@ -331,11 +328,6 @@ function getTitleAndAuthorInfo(){
   
   var exp = new RegExp(/ \/$/); // strip training ' /' from title
   titleStr = titleStr.replace(exp,'');
-  if (authorStr != ''){ // replace trailing period if there is an author
-    exp = new RegExp(/\.$/);
-    authorStr = authorStr.replace(exp,'');
-    book['author']=authorStr;
-  }
   book['title']=titleStr;
   if (debug) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
   
