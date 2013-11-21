@@ -16,9 +16,9 @@ var moment = require('moment');// for date formatting
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var book = {};
 var debug = false;
-var debug2 = false; // for when working on a single function
+var debug2 = true; // for when working on a single function
 var path = './';
-var isbnFile = 'isbns-sample.txt';
+var isbnFile = 'isbns-mid.txt';
 var dataFile = 'leisureBooksJSON.txt';
 var logFile = moment().format("YYYY-MM-DD")+'.log';
 var isbnsToProcess=[]; // used for lfow control
@@ -313,14 +313,14 @@ function checkResult(data){
 
 // Get title and author from 245 field
 function getTitleInfo(){
-  if (obj['subfield'][1][parserPrefix]['code']=='b') {
-    var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_']; // add subtitle if title $a is followed by $b
-   }
+  var titleStr = obj['subfield'][0]['_'];
 
-  else {
-    var titleStr = obj['subfield'][0]['_'];
+  if (obj['subfield'].length >= 2){// check length. usually will be 2 or more, but occasionally only the title subfield with no author
+    if (obj['subfield'][1][parserPrefix]['code']=='b') {
+      var titleStr = titleStr +' ' + obj['subfield'][1]['_']; // add subtitle if title $a is followed by $b
+     }
   }
-  
+
   var exp = new RegExp(/ \/$/); // strip trailing ' /' from title
   titleStr = titleStr.replace(exp,'');
   book['title']=titleStr;
