@@ -312,7 +312,8 @@ function getTitleAndAuthorInfo(){
   var titleArray=[];
   var authorStr=''; //author might be blank, so declare here
   var typeA=obj['subfield'];
-  if (debug2) console.log(util.inspect(typeA, showHidden=true, depth=6, colorize=true));
+  var tmp = obj['subfield'][0]['oclc']['code'];
+  if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true));
 
 
   if (typeA.length == 3){
