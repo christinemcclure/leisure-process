@@ -28,6 +28,7 @@ var obj, prop; //used between data retrieval from OCLC json object
 var summaryMsg =''; // used between processISBNfile and finishFile
 var countLoop=0; // used to flag end of isbn array
 var alertMsg='';
+var parserPrefix='oclc';
 
 
 // controlled order of processing
@@ -140,7 +141,7 @@ function processISBNFile(callback){
 // When data received, validate and extract data
 function collectXMLdata(isbn){
   var jsonString, datafieldObj;
-  parser = new xml2js.Parser({attrkey : 'oclc'});
+  parser = new xml2js.Parser({attrkey : parserPrefix});
   parser.addListener('end', function(result) {
     jsonString = JSON.stringify(result);
     if (checkResult(jsonString)==0){
@@ -312,7 +313,7 @@ function getTitleAndAuthorInfo(){
   var titleArray=[];
   var authorStr=''; //author might be blank, so declare here
   var typeA=obj['subfield'];
-  var tmp = obj['subfield'][0]['oclc']['code'];
+  var tmp = obj['subfield'][0][parserPrefix]['code'];
   if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true));
 
 
