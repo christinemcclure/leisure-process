@@ -310,26 +310,18 @@ function checkResult(data){
 
 // Get title and author from 245 field
 function getTitleInfo(){
-  var titleArray=[];
-  var typeA=obj['subfield'];
-  var tmp = obj['subfield'][0][parserPrefix]['code'];
-  if (debug2) console.log(util.inspect(tmp, showHidden=true, depth=6, colorize=true));
+  if (obj['subfield'][1][parserPrefix]['code']=='b') {
+    var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_']; // add subtitle if title $a is followed by $b
+   }
 
-
-  if (typeA.length == 3){
-    var titleStr = obj['subfield'][0]['_'] + ' ' + obj['subfield'][1]['_'];// get title and subtitle
-  }
-  else if (typeA.length == 2){
-    var titleStr = obj['subfield'][0]['_'];// otherwise only title and author
-  }
   else {
-    var titleStr = obj['subfield'][0]['_'];// otherwise only title
+    var titleStr = obj['subfield'][0]['_'];
   }
   
-  var exp = new RegExp(/ \/$/); // strip training ' /' from title
+  var exp = new RegExp(/ \/$/); // strip trailing ' /' from title
   titleStr = titleStr.replace(exp,'');
   book['title']=titleStr;
-  if (debug) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
+  if (debug2) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
   
 }
 
