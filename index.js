@@ -16,7 +16,7 @@ var moment = require('moment');// for date formatting
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var book = {};
 var debug = false;
-var debug2 = true; // for when working on a single function
+var debug2 = false; // for when working on a single function
 var path = './';
 var isbnFile = 'isbns-sample.txt';
 var dataFile = 'leisureBooksJSON.txt';
@@ -165,6 +165,9 @@ function collectXMLdata(isbn){
                 if (obj[prop]['tag']=='245'){
                   if (debug)console.log(isbn + '  ' +obj[prop]);
                   getTitleInfo();
+                }
+                if (obj[prop]['tag']=='100'){ // Not worring about corporate authors, committees, etc. Most likely leisure reading will have personal names
+                  getAuthorInfo(); 
                 }
                 if (obj[prop]['tag']=='520'){
                   getSummaryInfo();
@@ -321,9 +324,18 @@ function getTitleInfo(){
   var exp = new RegExp(/ \/$/); // strip trailing ' /' from title
   titleStr = titleStr.replace(exp,'');
   book['title']=titleStr;
-  if (debug2) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
-  
+  if (debug) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
 }
+
+function getAuthorInfo(){
+  var authorStr = obj['subfield'][0]['_'];
+  exp = new RegExp(/\.$/);
+  authorStr = authorStr.replace(exp,''); // strip trailing period
+  
+  book['author']=authorStr;
+  if (debug) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));  
+}
+
 
 //Collect isbn from response because we want to be sure to use IIT's isbn for the
 // search, not a different one
