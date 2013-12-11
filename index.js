@@ -326,7 +326,10 @@ function getTitleInfo(){
     if (obj['subfield'][i][parserPrefix]['code']=='a') {
         titleStr = obj['subfield'][i]['_'];
     }
-  }
+    else if (obj['subfield'][i][parserPrefix]['code']=='b') {
+        titleStr += obj['subfield'][i]['_'];
+    }
+    }
   
   var exp = new RegExp(/ \/$/); // strip trailing ' /' from title
   titleStr = titleStr.replace(exp,'');
