@@ -316,14 +316,16 @@ function getTitleInfo(){
     var titleStr='';
     for (var i=0; i<obj['subfield'].length; i++){
       if (obj['subfield'][i][parserPrefix]['code']=='a') {
-          titleStr = obj['subfield'][i]['_'];
+        titleStr = obj['subfield'][i]['_'];
+        var exp = new RegExp(/ :$/); // if there is a colon, move to a logical place: no space
+        titleStr = titleStr.replace(exp,': ');
       }
       else if (obj['subfield'][i][parserPrefix]['code']=='b') {
           titleStr += obj['subfield'][i]['_'];
       }
     }
   
-  var exp = new RegExp(/ \/$/); // strip trailing ' /' from title
+  exp = new RegExp(/ \/$/); // strip trailing ' /' from title
   titleStr = titleStr.replace(exp,'');
   book['title']=titleStr;
   if (debug) console.log(util.inspect(book, showHidden=true, depth=6, colorize=true));
