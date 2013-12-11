@@ -313,8 +313,9 @@ function checkResult(data){
 
 // Get title and author from 245 field
 function getTitleInfo(){
+  if (debug2) console.log(util.inspect(obj['subfield'][0], showHidden=true, depth=6, colorize=true));    
   var titleStr = obj['subfield'][0]['_'];
-
+ 
   if (obj['subfield'].length >= 2){// check length. usually will be 2 or more, but occasionally only the title subfield with no author
     if (obj['subfield'][1][parserPrefix]['code']=='b') {
       var titleStr = titleStr +' ' + obj['subfield'][1]['_']; // add subtitle if title $a is followed by $b
