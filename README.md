@@ -1,13 +1,14 @@
-# Project Summary Notes
-This project is complete and can be used to process all of the leisure reading items at Galvin Library (one a production-level API key is granted).
-I had some difficulty getting accustomed to the asynchronous nature of Node.js, and this program would be benefited by a code review to identify and correct unnecessary functions. I had 
-tried several different approaches to ensure that the ISBN file was processed prior to sending off XML requests, so there
-is probably some overly-complicated code that can be removed. A future version of this app would include console interaction that would
-allow the user to select which text file to process and what to name the log/data files. 
+# To generate a new file
 
-I think including some concrete exercises of async functions and how to handle them in code logic would benefit future students. I know that was where
-I had trouble: all of the examples I found online were for web servers listening for HTTP traffic and I found it hard to correlate to my situation. But I
-did enjoy the class, and am going to work on the front end version of this program: I hope to have it ready for students to use at the semester break. 
+(when leisure reading is refreshed)
+set environment variable: OCLC_DEV_KEY
+
+1. Install Node.js with NPM on a workstation
+2. Clone this repository to the workstation: https://github.com/christinemcclure/leisure-process
+3. Run npm install to create the package
+4. Obtain a list of ISBNs from the leisure reading collection. Save the file as isbns-full.txt (create input options in the future) in the directory. (Verify isbnFile in index.js file is set correctly)
+5. Run node index.js to generate the data file: leisureBooks.json
+6. Copy the file to the front-end directory: currently: library.iit.edu\html\leisure
 
 
 # Logic
