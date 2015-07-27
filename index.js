@@ -153,6 +153,7 @@ function collectXMLdata(isbn){
         var bad = testForScripts.test(jsonString);
         if (debug)console.log(jsonString+'\n\ngood/bad '+good+' '+bad);
         var jsonObj = JSON.parse(jsonString);
+        if (jsonObj.record) {  // OCLC will return valid XML/JSON record in {diagnostic} format if no record found. 
         datafieldObj = jsonObj.record.datafield;
         var i=0;
         countLoop++;
@@ -180,7 +181,13 @@ function collectXMLdata(isbn){
            }
         }
 
-    getSubjectsInfo(subjectsObj);
+        getSubjectsInfo(subjectsObj);
+        
+        logMsg(book.isbn + ' was processed successfully.');
+          fs.appendFile(path+dataFile, '  '+JSON.stringify(book)+',\r\n', function (error) {
+            if (error) throw error;
+        });    
+     }
 
     if (debug) console.log('length is '+isbnsToProcess.length + ' count is '+countLoop);
 
@@ -188,12 +195,6 @@ function collectXMLdata(isbn){
         finishFile(function(){
           validateDataFile();
         });
-    }
-    else{
-    logMsg(book.isbn + ' was processed successfully.');
-      fs.appendFile(path+dataFile, '  '+JSON.stringify(book)+',\r\n', function (error) {
-        if (error) throw error;
-      });
     }
    }// end check result
    else {
@@ -333,7 +334,8 @@ function getTitleInfo(){
 }
 
 function getAuthorInfo(){
-  var authorStr = obj['subfield'][0]['_'];
+  var authorStr='';
+  authorStr = obj['subfield'][0]['_'];
   exp = new RegExp(/\.$/);
   authorStr = authorStr.replace(exp,''); // strip trailing period
   
