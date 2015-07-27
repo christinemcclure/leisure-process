@@ -116,6 +116,7 @@ function processISBNFile(callback){
       for (var i=0; i< isbns.length; i++){
         var isbnArr=isbns[i].split(' ');
         var tempISBN = isbnArr[0].trim().replace(/(\r\n|\n|\r)/gm,'');;// isbn will be first element in the array. Ignore spaces and line breaks
+        tempISBN = tempISBN.replace('-',''); // remove hyphens before processing        
         var rt = checkISBN(tempISBN);// send to validator function
         if (rt==true){
           rt = checkIfInArray(isbnsToProcess,tempISBN);
@@ -378,6 +379,7 @@ function logMsg(msg){
 // not full checksum processing, just ensuring that the split worked correctly
 function checkISBN(isbn) {
   var exp, ret;
+  isbn = isbn.replace('-',''); // remove hyphens before processing
   if  (isbn.length === 10) {
     exp = new RegExp(/\b(^\d{10}$|^\d{9}x)$\b/i); // ISBN-10 can be 10 digits, or 9 digits + x (checksum of 10)
     if (debug) console.log('the length of '+isbn +' is '+ isbn.length);
