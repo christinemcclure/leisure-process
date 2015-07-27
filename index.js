@@ -15,6 +15,9 @@ var moment = require('moment');// for date formatting
 // Variables
 var key = process.env.OCLC_DEV_KEY;// store dev key in env variable for security
 var book = {};
+  book['title']='';
+  book['author']='';
+  book['summary']='';
 var debug = false;
 var debug2 = true; // for when working on a single function
 var path = './';
@@ -261,7 +264,7 @@ function getSubjectsInfo(obj){
 // Get summary info from the 520 field
 function getSummaryInfo(){
   var summaryArray=[];
-  var summaryStr = obj['subfield'][0]['_'];
+  var summaryStr=obj['subfield'][0]['_'];
   summaryStr = summaryStr.trim();
   if (debug) console.log(summaryStr);
   book['summary']=summaryStr;
@@ -334,8 +337,7 @@ function getTitleInfo(){
 }
 
 function getAuthorInfo(){
-  var authorStr='';
-  authorStr = obj['subfield'][0]['_'];
+  var authorStr = obj['subfield'][0]['_'];
   exp = new RegExp(/\.$/);
   authorStr = authorStr.replace(exp,''); // strip trailing period
   
