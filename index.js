@@ -385,6 +385,9 @@ function checkISBN(isbn) {
   else if (isbn.length === 13){
     exp = new RegExp(/^978\d{10}$/); // ISBN-13 has different checksum logic. only digits
   }
+  else if (isbn.length === 14){
+    exp = new RegExp(/^978-\d{10}$/); // ISBN-13 with a hyphen
+  }  
   else {
     if (debug) console.log('"'+isbn+'" is a not valid isbn.');
     return false; // quick check for length
